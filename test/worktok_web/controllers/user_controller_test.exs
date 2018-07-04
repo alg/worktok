@@ -3,8 +3,8 @@ defmodule WorktokWeb.UserControllerTest do
 
   alias Worktok.Accounts
 
-  @create_attrs %{email: "some email", name: "some name", password_hash: "some password_hash"}
-  @invalid_attrs %{email: nil, name: nil, password_hash: nil}
+  @create_attrs %{name: "some name"}
+  @invalid_attrs %{name: nil}
 
   def fixture(:user) do
     {:ok, user} = Accounts.create_user(@create_attrs)
