@@ -11,8 +11,9 @@ defmodule WorktokWeb.UserController do
 
   def create(conn, %{"user" => user_params}) do
     case Accounts.create_user(user_params) do
-      {:ok, _user} ->
+      {:ok, user} ->
         conn
+        |> WorktokWeb.Auth.login(user)
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: page_path(conn, :index))
 

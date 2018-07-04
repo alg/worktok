@@ -23,6 +23,7 @@ defmodule WorktokWeb do
       import Plug.Conn
       import WorktokWeb.Router.Helpers
       import WorktokWeb.Gettext
+      import WorktokWeb.Auth, only: [authenticate_user: 2]
     end
   end
 
