@@ -14,17 +14,25 @@ defmodule WorktokWeb.Router do
     plug :accepts, ["json"]
   end
 
+  # Public access
   scope "/", WorktokWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/", PageController, :index
-    get "/secure", PageController, :secure
 
     get "/signup", UserController, :new
     post "/signup", UserController, :create
 
     get "/login", SessionController, :new
     post "/login", SessionController, :create
+  end
+
+  # Authenticated users only
+  scope "/", WorktokWeb do
+    pipe_through [:browser, :authenticate_user]
+
+    get "/secure", PageController, :secure
+
     delete "/logout", SessionController, :delete
   end
 
