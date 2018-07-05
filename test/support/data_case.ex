@@ -22,6 +22,7 @@ defmodule Worktok.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Worktok.DataCase
+      import Worktok.TestHelpers
     end
   end
 

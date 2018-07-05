@@ -18,12 +18,12 @@ defmodule WorktokWeb.Router do
   scope "/", WorktokWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get  "/", PageController, :index
 
-    get "/signup", UserController, :new
+    get  "/signup", UserController, :new
     post "/signup", UserController, :create
 
-    get "/login", SessionController, :new
+    get  "/login", SessionController, :new
     post "/login", SessionController, :create
   end
 
@@ -31,7 +31,7 @@ defmodule WorktokWeb.Router do
   scope "/", WorktokWeb do
     pipe_through [:browser, :authenticate_user]
 
-    get "/secure", PageController, :secure
+    resources "/clients", ClientController
 
     delete "/logout", SessionController, :delete
   end

@@ -20,6 +20,7 @@ defmodule WorktokWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       import WorktokWeb.Router.Helpers
+      import Worktok.TestHelpers
 
       # The default endpoint for testing
       @endpoint WorktokWeb.Endpoint
@@ -29,10 +30,23 @@ defmodule WorktokWeb.ConnCase do
 
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Worktok.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Worktok.Repo, {:shared, self()})
     end
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+
+    conn = Phoenix.ConnTest.build_conn()
+
+    opts = cond do
+      name = tags[:login_as] ->
+        user = Worktok.TestHelpers.insert_user(name: name)
+        conn = Plug.Conn.assign(conn, :current_user, user)
+        [conn: conn, user: user]
+      true ->
+        [conn: conn]
+    end
+
+    {:ok, opts}
   end
 
 end

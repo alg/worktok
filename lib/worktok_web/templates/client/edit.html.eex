@@ -1,0 +1,5 @@
+<h2>Edit Client</h2>
+
+<%= render "form.html", Map.put(assigns, :action, client_path(@conn, :update, @client)) %>
+
+<span><%= link "Back", to: client_path(@conn, :index) %></span>

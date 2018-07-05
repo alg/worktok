@@ -6,7 +6,9 @@ defmodule Worktok.Accounts.User do
 
   schema "users" do
     field :name, :string
-    has_one :credential, Credential
+
+    has_one :credential, Credential, on_delete: :delete_all
+    has_many :clients, Worktok.Registry.Client, on_delete: :delete_all
 
     timestamps()
   end
@@ -18,6 +20,7 @@ defmodule Worktok.Accounts.User do
     |> validate_required([:name])
   end
 
+  @doc false
   def registration_changeset(user, attrs) do
     user
     |> changeset(attrs)
