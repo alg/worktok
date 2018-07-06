@@ -19,6 +19,6 @@ defmodule Worktok.Registry.Client do
     client
     |> cast(attrs, [:name, :email, :prefix, :active, :rate])
     |> validate_required([:name, :email, :prefix, :active, :rate])
-    |> unique_constraint(:prefix)
+    |> unique_constraint(:prefix, name: :clients_user_id_prefix_index)
   end
 end

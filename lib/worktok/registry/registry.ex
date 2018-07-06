@@ -23,7 +23,15 @@ defmodule Worktok.Registry do
   """
   def list_user_clients(%Accounts.User{} = user) do
     Client
-    |> user_clients_query(user)
+    |> user_scope_query(user)
+    |> Repo.all()
+    |> preload_user()
+  end
+
+  def list_active_user_clients(%Accounts.User{} = user) do
+    Client
+    |> user_scope_query(user)
+    |> active()
     |> Repo.all()
     |> preload_user()
   end
@@ -42,13 +50,17 @@ defmodule Worktok.Registry do
   """
   def get_user_client!(%Accounts.User{} = user, id) do
     from(c in Client, where: c.id == ^id)
-    |> user_clients_query(user)
+    |> user_scope_query(user)
     |> Repo.one!()
     |> preload_user()
   end
 
-  defp user_clients_query(query, %Accounts.User{id: user_id}) do
+  defp user_scope_query(query, %Accounts.User{id: user_id}) do
     from(c in query, where: c.user_id == ^user_id)
+  end
+
+  defp active(query) do
+    from(c in query, where: c.active == true)
   end
 
   @doc """
@@ -92,5 +104,74 @@ defmodule Worktok.Registry do
 
   defp preload_user(query) do
     Repo.preload(query, :user)
+  end
+
+  alias Worktok.Registry.Project
+
+  @doc """
+  Returns the list of projects.
+  """
+  def list_projects do
+    Project
+    |> Repo.all()
+    |> Repo.preload([:user, :client])
+  end
+
+  def list_user_projects(%Accounts.User{} = user) do
+    Project
+    |> user_scope_query(user)
+    |> Repo.all()
+    |> Repo.preload([:user, :client])
+  end
+
+  @doc """
+  Gets a single project.
+  """
+  def get_project!(id) do
+    Project
+    |> Repo.get!(id)
+    |> Repo.preload([:user, :client])
+  end
+
+  def get_user_project!(%Accounts.User{} = user, id) do
+    from(p in Project, where: p.id == ^id)
+    |> user_scope_query(user)
+    |> Repo.one!()
+    |> Repo.preload([:user, :client])
+  end
+
+   @doc """
+  Creates a project.
+  """
+  def create_project(%Accounts.User{} = user, attrs \\ %{}) do
+    %Project{}
+    |> Project.changeset(attrs)
+    |> put_user(user)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a project.
+  """
+  def update_project(%Project{} = project, attrs) do
+    project
+    |> Project.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a Project.
+  """
+  def delete_project(%Project{} = project) do
+    Repo.delete(project)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking project changes.
+  """
+  def change_project(%Accounts.User{} = user, %Project{} = project) do
+    project
+    |> Project.changeset(%{})
+    |> put_user(user)
   end
 end

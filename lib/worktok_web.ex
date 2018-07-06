@@ -27,6 +27,21 @@ defmodule WorktokWeb do
     end
   end
 
+  def user_controller do
+    quote do
+      use Phoenix.Controller, namespace: WorktokWeb
+      import Plug.Conn
+      import WorktokWeb.Router.Helpers
+      import WorktokWeb.Gettext
+      import WorktokWeb.Auth, only: [authenticate_user: 2]
+
+      def action(conn, _) do
+        args = [conn, conn.params, conn.assigns.current_user]
+        apply(__MODULE__, Phoenix.Controller.action_name(conn), args)
+      end
+    end
+  end
+
   def view do
     quote do
       use Phoenix.View, root: "lib/worktok_web/templates",

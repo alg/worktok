@@ -1,14 +1,8 @@
 defmodule WorktokWeb.ClientController do
-  use WorktokWeb, :controller
+  use WorktokWeb, :user_controller
 
   alias Worktok.Registry
   alias Worktok.Registry.Client
-
-  def action(conn, _) do
-    args = [conn, conn.params, conn.assigns.current_user]
-    apply(__MODULE__, action_name(conn), args)
-  end
-
 
   def index(conn, _params, current_user) do
     clients = Registry.list_user_clients(current_user)

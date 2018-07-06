@@ -34,4 +34,19 @@ defmodule Worktok.TestHelpers do
     client
   end
 
+  def insert_project(%Registry.Client{} = client, attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{
+      active: true,
+      name: "Some Project",
+      prefix: "SP",
+      rate: "50.25",
+      client_id: client.id
+    })
+
+    {:ok, project} = Registry.create_project(client.user, attrs)
+
+    project
+  end
+
+
 end

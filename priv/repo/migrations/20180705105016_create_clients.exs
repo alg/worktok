@@ -13,7 +13,7 @@ defmodule Worktok.Repo.Migrations.CreateClients do
       timestamps()
     end
 
-    create unique_index(:clients, [:prefix])
+    create unique_index(:clients, [:user_id, :prefix])
     create index(:clients, [:user_id])
   end
 end

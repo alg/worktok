@@ -32,6 +32,7 @@ defmodule WorktokWeb.Router do
     pipe_through [:browser, :authenticate_user]
 
     resources "/clients", ClientController
+    resources "/projects", ProjectController
 
     delete "/logout", SessionController, :delete
   end
