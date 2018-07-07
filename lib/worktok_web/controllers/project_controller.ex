@@ -4,6 +4,13 @@ defmodule WorktokWeb.ProjectController do
   alias Worktok.Registry
   alias Worktok.Registry.Project
 
+  plug :load_clients when action in [:new, :edit]
+
+  defp load_clients(conn, _) do
+    current_user = conn.assigns.current_user
+    assign(conn, :clients, Registry.list_user_clients(current_user))
+  end
+
   def index(conn, _params, current_user) do
     projects = Registry.list_projects()
     render(conn, "index.html", projects: projects)
@@ -11,8 +18,7 @@ defmodule WorktokWeb.ProjectController do
 
   def new(conn, _params, current_user) do
     changeset = Registry.change_project(current_user, %Project{})
-    clients = Registry.list_active_user_clients(current_user)
-    render(conn, "new.html", changeset: changeset, clients: clients)
+    render(conn, "new.html", changeset: changeset)
   end
 
   def create(conn, %{"project" => project_params}, current_user) do
@@ -23,7 +29,7 @@ defmodule WorktokWeb.ProjectController do
         |> redirect(to: project_path(conn, :show, project))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        clients = Registry.list_active_user_clients(current_user)
+        clients = Registry.list_user_clients(current_user)
         render(conn, "new.html", changeset: changeset, clients: clients)
     end
   end
@@ -35,9 +41,8 @@ defmodule WorktokWeb.ProjectController do
 
   def edit(conn, %{"id" => id}, current_user) do
     project = Registry.get_user_project!(current_user, id)
-    clients = Registry.list_active_user_clients(current_user)
     changeset = Registry.change_project(current_user, project)
-    render(conn, "edit.html", project: project, changeset: changeset, clients: clients)
+    render(conn, "edit.html", project: project, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "project" => project_params}, current_user) do
@@ -50,7 +55,7 @@ defmodule WorktokWeb.ProjectController do
         |> redirect(to: project_path(conn, :show, project))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        clients = Registry.list_active_user_clients(current_user)
+        clients = Registry.list_user_clients(current_user)
         render(conn, "edit.html", project: project, changeset: changeset, clients: clients)
     end
   end

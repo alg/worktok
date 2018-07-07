@@ -53,11 +53,21 @@ defmodule WorktokWeb.ClientController do
 
   def delete(conn, %{"id" => id}, current_user) do
     client = Registry.get_user_client!(current_user, id)
-    {:ok, _client} = Registry.delete_client(client)
+    case Registry.delete_client(client) do
+      {:ok, _client} ->
+        conn
+        |> put_flash(:info, "Client deleted successfully.")
+        |> redirect(to: client_path(conn, :index))
 
-    conn
-    |> put_flash(:info, "Client deleted successfully.")
-    |> redirect(to: client_path(conn, :index))
+      {:error, %Ecto.Changeset{} = changeset} ->
+        msg =
+          WorktokWeb.Errors.full_messages(changeset)
+          |> Enum.join(" ")
+
+        conn
+        |> put_flash(:error, "Could not delete client: #{msg}")
+        |> redirect(to: client_path(conn, :index))
+    end
   end
 
 end

@@ -86,7 +86,7 @@ defmodule Worktok.Registry do
   Deletes a Client.
   """
   def delete_client(%Client{} = client) do
-    Repo.delete(client)
+    Repo.delete(Client.delete_changeset(client))
   end
 
   @doc """
