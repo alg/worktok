@@ -1,0 +1,33 @@
+<h2>Show Invoice</h2>
+
+<ul>
+
+  <li>
+    <strong>Ref:</strong>
+    <%= @invoice.ref %>
+  </li>
+
+  <li>
+    <strong>Total:</strong>
+    <%= @invoice.total %>
+  </li>
+
+  <li>
+    <strong>Hours:</strong>
+    <%= @invoice.hours %>
+  </li>
+
+  <li>
+    <strong>Paid on:</strong>
+    <%= @invoice.paid_on %>
+  </li>
+
+  <li>
+    <strong>Forgiven:</strong>
+    <%= @invoice.forgiven %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: invoice_path(@conn, :edit, @invoice) %></span>
+<span><%= link "Back", to: invoice_path(@conn, :index) %></span>

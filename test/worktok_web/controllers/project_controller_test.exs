@@ -31,7 +31,7 @@ defmodule WorktokWeb.ProjectControllerTest do
   describe "create project" do
     @tag login_as: "Max"
     test "redirects to show when data is valid", %{conn: conn, user: user} do
-      client = insert_client(user)
+      client = client_fixture(user)
       conn = post conn, project_path(conn, :create), project: Enum.into(%{client_id: client.id}, @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
@@ -75,18 +75,18 @@ defmodule WorktokWeb.ProjectControllerTest do
     setup [:create_project]
 
     @tag login_as: "Max"
-    test "deletes chosen project", %{conn: conn, project: project} do
+    test "deletes chosen project", %{conn: conn, project: project, user: user} do
       conn = delete conn, project_path(conn, :delete, project)
       assert redirected_to(conn) == project_path(conn, :index)
       assert_raise Ecto.NoResultsError, fn ->
-        Worktok.Registry.get_project!(project.id)
+        Worktok.Registry.get_user_project!(user, project.id)
       end
     end
   end
 
   defp create_project(%{user: user}) do
-    client = insert_client(user)
-    project = insert_project(client)
+    client = client_fixture(user)
+    project = project_fixture(client)
     {:ok, project: project, client: client}
   end
 end

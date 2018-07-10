@@ -12,7 +12,7 @@ defmodule WorktokWeb.ProjectController do
   end
 
   def index(conn, _params, current_user) do
-    projects = Registry.list_projects()
+    projects = Registry.list_user_projects(current_user)
     render(conn, "index.html", projects: projects)
   end
 
@@ -61,7 +61,7 @@ defmodule WorktokWeb.ProjectController do
   end
 
   def delete(conn, %{"id" => id}, current_user) do
-    project = Registry.get_project!(id)
+    project = Registry.get_user_project!(current_user, id)
     {:ok, _project} = Registry.delete_project(project)
 
     conn

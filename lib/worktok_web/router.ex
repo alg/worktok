@@ -33,6 +33,7 @@ defmodule WorktokWeb.Router do
 
     resources "/clients", ClientController
     resources "/projects", ProjectController
+    resources "/invoices", InvoiceController
 
     delete "/logout", SessionController, :delete
   end

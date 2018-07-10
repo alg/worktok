@@ -4,45 +4,20 @@ defmodule Worktok.Registry do
   """
 
   import Ecto.Query, warn: false
+
   alias Worktok.Repo
-
-  alias Worktok.Registry.Client
   alias Worktok.Accounts
-
-  @doc """
-  Returns the list of clients.
-  """
-  def list_clients() do
-    Client
-    |> Repo.all
-    |> preload_user()
-  end
+  alias Worktok.Registry.Client
+  alias Worktok.Registry.Project
 
   @doc """
   Returns the list of clients of a user.
   """
   def list_user_clients(%Accounts.User{} = user) do
     Client
-    |> user_scope_query(user)
+    |> Accounts.user_scope_query(user)
     |> Repo.all()
-    |> preload_user()
-  end
-
-  def list_active_user_clients(%Accounts.User{} = user) do
-    Client
-    |> user_scope_query(user)
-    |> active()
-    |> Repo.all()
-    |> preload_user()
-  end
-
-  @doc """
-  Gets a single client.
-  """
-  def get_client!(id) do
-    Client
-    |> Repo.get!(id)
-    |> preload_user()
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -50,17 +25,9 @@ defmodule Worktok.Registry do
   """
   def get_user_client!(%Accounts.User{} = user, id) do
     from(c in Client, where: c.id == ^id)
-    |> user_scope_query(user)
+    |> Accounts.user_scope_query(user)
     |> Repo.one!()
-    |> preload_user()
-  end
-
-  defp user_scope_query(query, %Accounts.User{id: user_id}) do
-    from(c in query, where: c.user_id == ^user_id)
-  end
-
-  defp active(query) do
-    from(c in query, where: c.active == true)
+    |> Repo.preload(:user)
   end
 
   @doc """
@@ -102,24 +69,12 @@ defmodule Worktok.Registry do
     Ecto.Changeset.put_assoc(changeset, :user, user)
   end
 
-  defp preload_user(query) do
-    Repo.preload(query, :user)
-  end
-
-  alias Worktok.Registry.Project
-
   @doc """
-  Returns the list of projects.
+  Returns the list of user projects.
   """
-  def list_projects do
-    Project
-    |> Repo.all()
-    |> Repo.preload([:user, :client])
-  end
-
   def list_user_projects(%Accounts.User{} = user) do
     Project
-    |> user_scope_query(user)
+    |> Accounts.user_scope_query(user)
     |> Repo.all()
     |> Repo.preload([:user, :client])
   end
@@ -127,15 +82,9 @@ defmodule Worktok.Registry do
   @doc """
   Gets a single project.
   """
-  def get_project!(id) do
-    Project
-    |> Repo.get!(id)
-    |> Repo.preload([:user, :client])
-  end
-
   def get_user_project!(%Accounts.User{} = user, id) do
     from(p in Project, where: p.id == ^id)
-    |> user_scope_query(user)
+    |> Accounts.user_scope_query(user)
     |> Repo.one!()
     |> Repo.preload([:user, :client])
   end
@@ -174,4 +123,9 @@ defmodule Worktok.Registry do
     |> Project.changeset(%{})
     |> put_user(user)
   end
+
+  defp active(query) do
+    from(q in query, where: q.active == true)
+  end
+
 end

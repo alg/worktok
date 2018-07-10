@@ -2,8 +2,9 @@ defmodule Worktok.TestHelpers do
 
   alias Worktok.Accounts
   alias Worktok.Registry
+  alias Worktok.Billing
 
-  def insert_user(attrs \\ %{}) do
+  def user_fixture(attrs \\ %{}) do
     i = System.unique_integer([:positive])
 
     {:ok, user} =
@@ -20,7 +21,7 @@ defmodule Worktok.TestHelpers do
     user
   end
 
-  def insert_client(%Accounts.User{} = user, attrs \\ %{}) do
+  def client_fixture(%Accounts.User{} = user, attrs \\ %{}) do
     attrs = Enum.into(attrs, %{
       active: true,
       email: "client@email.com",
@@ -34,7 +35,7 @@ defmodule Worktok.TestHelpers do
     client
   end
 
-  def insert_project(%Registry.Client{} = client, attrs \\ %{}) do
+  def project_fixture(%Registry.Client{} = client, attrs \\ %{}) do
     attrs = Enum.into(attrs, %{
       active: true,
       name: "Some Project",
@@ -44,9 +45,28 @@ defmodule Worktok.TestHelpers do
     })
 
     {:ok, project} = Registry.create_project(client.user, attrs)
-
-    project
+    project |> Worktok.Repo.preload(:client)
   end
 
+  def invoice_fixture(%Accounts.User{} = user, %Registry.Project{} = project, attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{
+      ref: "someref",
+      total: "120.50",
+    })
 
+    {:ok, invoice} = Billing.create_invoice(user, project, attrs)
+    invoice
+  end
+
+  def work_fixture(%Accounts.User{} = user, attrs \\ %{}) do
+    attrs = Enum.into(attrs, %{
+      task: "Sample task",
+      hours: "2",
+      total: "150",
+      worked_on: "2018-10-24"
+    })
+
+    {:ok, work} = Billing.create_work(user, attrs)
+    work
+  end
 end

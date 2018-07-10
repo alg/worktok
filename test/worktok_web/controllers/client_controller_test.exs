@@ -40,7 +40,7 @@ defmodule WorktokWeb.ClientControllerTest do
   describe "edit client" do
     @tag login_as: "Max"
     test "renders form for editing chosen client", %{conn: conn, user: user} do
-      client = insert_client(user)
+      client = client_fixture(user)
       conn = get conn, client_path(conn, :edit, client)
       assert html_response(conn, 200) =~ "Edit Client"
     end
@@ -49,14 +49,14 @@ defmodule WorktokWeb.ClientControllerTest do
   describe "update client" do
     @tag login_as: "Max"
     test "redirects when data is valid", %{conn: conn, user: user} do
-      client = insert_client(user)
+      client = client_fixture(user)
       conn = put conn, client_path(conn, :update, client), client: @update_attrs
       assert redirected_to(conn) == client_path(conn, :show, client)
     end
 
     @tag login_as: "Max"
     test "renders errors when data is invalid", %{conn: conn, user: user} do
-      client = insert_client(user)
+      client = client_fixture(user)
       conn = put conn, client_path(conn, :update, client), client: @invalid_attrs
       assert html_response(conn, 200) =~ "Edit Client"
     end
@@ -65,11 +65,11 @@ defmodule WorktokWeb.ClientControllerTest do
   describe "delete client" do
     @tag login_as: "Max"
     test "deletes chosen client", %{conn: conn, user: user} do
-      client = insert_client(user)
+      client = client_fixture(user)
       conn = delete conn, client_path(conn, :delete, client)
       assert redirected_to(conn) == client_path(conn, :index)
       assert_raise Ecto.NoResultsError, fn ->
-        Worktok.Registry.get_client!(client.id)
+        Worktok.Registry.get_user_client!(user, client.id)
       end
     end
   end

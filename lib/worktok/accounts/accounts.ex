@@ -108,4 +108,11 @@ defmodule Worktok.Accounts do
     User.changeset(user, %{})
   end
 
+  @doc """
+  Narrows query down to a user.
+  """
+  def user_scope_query(query, %User{id: user_id}) do
+    from(q in query, where: q.user_id == ^user_id)
+  end
+
 end

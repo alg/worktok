@@ -39,7 +39,7 @@ defmodule WorktokWeb.ConnCase do
 
     opts = cond do
       name = tags[:login_as] ->
-        user = Worktok.TestHelpers.insert_user(name: name)
+        user = Worktok.TestHelpers.user_fixture(name: name)
         conn = Plug.Conn.assign(conn, :current_user, user)
         [conn: conn, user: user]
       true ->
