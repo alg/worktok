@@ -20,6 +20,16 @@ defmodule WorktokWeb.ProjectControllerTest do
     end
   end
 
+  describe "show" do
+    setup [:create_project]
+
+    @tag login_as: "Max"
+    test "show project", %{conn: conn, project: project} do
+      conn = get conn, project_path(conn, :show, project)
+      assert html_response(conn, 200) =~ "Show Project"
+    end
+  end
+
   describe "new project" do
     @tag login_as: "Max"
     test "renders form", %{conn: conn} do

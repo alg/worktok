@@ -13,6 +13,15 @@ defmodule WorktokWeb.ClientControllerTest do
     end
   end
 
+  describe "show" do
+    @tag login_as: "Max"
+    test "showing client", %{conn: conn, user: user} do
+      client = client_fixture(user)
+      conn = get conn, client_path(conn, :show, client)
+      assert html_response(conn, 200) =~ "Show Client"
+    end
+  end
+
   describe "new client" do
     @tag login_as: "Max"
     test "renders form", %{conn: conn} do
@@ -71,6 +80,15 @@ defmodule WorktokWeb.ClientControllerTest do
       assert_raise Ecto.NoResultsError, fn ->
         Worktok.Registry.get_user_client!(user, client.id)
       end
+    end
+
+    @tag login_as: "Max"
+    test "can't complete", %{conn: conn, user: user} do
+      client = client_fixture(user)
+      project_fixture(client)
+      conn = delete conn, client_path(conn, :delete, client)
+      assert redirected_to(conn) == client_path(conn, :index)
+      assert get_flash(conn, :error) =~ ~r/Could not delete client/
     end
   end
 
