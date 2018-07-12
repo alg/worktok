@@ -3,6 +3,9 @@
 /db
 /deps
 /*.ez
+/.imdone
+
+/cover
 
 # Generated on crash by the VM
 erl_crash.dump
