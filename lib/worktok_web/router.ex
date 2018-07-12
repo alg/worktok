@@ -31,6 +31,9 @@ defmodule WorktokWeb.Router do
   scope "/", WorktokWeb do
     pipe_through [:browser, :authenticate_user]
 
+    get  "/dashboard", DashboardController, :index
+    post "/add_work", DashboardController, :add_work
+
     resources "/clients", ClientController
     resources "/projects", ProjectController
     resources "/invoices", InvoiceController

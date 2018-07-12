@@ -124,8 +124,4 @@ defmodule Worktok.Registry do
     |> put_user(user)
   end
 
-  defp active(query) do
-    from(q in query, where: q.active == true)
-  end
-
 end

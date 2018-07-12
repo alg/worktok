@@ -22,7 +22,7 @@ defmodule WorktokWeb.UserControllerTest do
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post conn, user_path(conn, :create), user: @create_attrs
 
-      assert redirected_to(conn) == page_path(conn, :index)
+      assert redirected_to(conn) == dashboard_path(conn, :index)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

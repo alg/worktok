@@ -15,7 +15,7 @@ defmodule WorktokWeb.UserController do
         conn
         |> WorktokWeb.Auth.login(user)
         |> put_flash(:info, "User created successfully.")
-        |> redirect(to: page_path(conn, :index))
+        |> redirect(to: dashboard_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)

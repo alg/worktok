@@ -10,7 +10,7 @@ defmodule WorktokWeb.SessionController do
       {:ok, conn} ->
         conn
         |> put_flash(:info, "Welcome back!")
-        |> redirect(to: page_path(conn, :index))
+        |> redirect(to: dashboard_path(conn, :index))
 
       {:error, _reason, conn} ->
         conn
@@ -23,7 +23,7 @@ defmodule WorktokWeb.SessionController do
     conn
     |> WorktokWeb.Auth.logout()
     |> put_flash(:info, "Come back soon!")
-    |> redirect(to: page_path(conn, :index))
+    |> redirect(to: dashboard_path(conn, :index))
   end
 
 end
