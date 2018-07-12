@@ -20,6 +20,31 @@ defmodule Worktok.AccountsTest do
       assert Accounts.get_user!(user.id).id == user.id
     end
 
+    test "get_user/1 returns the user with given id" do
+      user = user_fixture()
+      assert Accounts.get_user(user.id).id == user.id
+    end
+
+    test "get_user_by_email/1 returns the user with given id" do
+      user = user_fixture() |> Worktok.Repo.preload(:credential)
+      assert Accounts.get_user_by_email(user.credential.email).id == user.id
+    end
+
+    test "authenticate_by_email_and_pass returns the user if valid" do
+      user = user_fixture() |> Worktok.Repo.preload(:credential)
+      {:ok, auth_user} = Accounts.authenticate_by_email_and_pass(user.credential.email, "supersecret")
+      assert auth_user.id == user.id
+    end
+
+    test "authenticate_by_email_and_pass when not authorized" do
+      user = user_fixture() |> Worktok.Repo.preload(:credential)
+      assert {:error, :unauthorized} = Accounts.authenticate_by_email_and_pass(user.credential.email, "wrong-password")
+    end
+
+    test "authenticate_by_email_and_pass when no user" do
+      assert {:error, :unauthorized} = Accounts.authenticate_by_email_and_pass("unknown@email.com", "supersecret")
+    end
+
     test "create_user/1 with valid data creates a user" do
       user = user_fixture()
       assert user.name == "John Doe"

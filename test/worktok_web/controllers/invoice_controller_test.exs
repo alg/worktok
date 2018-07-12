@@ -9,6 +9,16 @@ defmodule WorktokWeb.InvoiceControllerTest do
     end
   end
 
+  describe "show" do
+    setup [:create_invoice]
+
+    @tag login_as: "Max"
+    test "shows invoice details", %{conn: conn, invoice: invoice} do
+      conn = get conn, invoice_path(conn, :show, invoice)
+      assert html_response(conn, 200) =~ "Show Invoice"
+    end
+  end
+
   describe "delete invoice" do
     setup [:create_invoice]
 

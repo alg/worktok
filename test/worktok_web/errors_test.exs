@@ -15,4 +15,12 @@ defmodule WorktokWeb.ErrorsTest do
 
     assert WorktokWeb.Errors.full_messages(ch) == ["Projects still exist"]
   end
+
+  test "with errors with no translation for key" do
+    ch =
+      Client.delete_changeset(%Client{})
+      |> Ecto.Changeset.add_error(:magic, "still exist")
+
+    assert WorktokWeb.Errors.full_messages(ch) == ["magic still exist"]
+  end
 end

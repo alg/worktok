@@ -39,7 +39,7 @@ defmodule Worktok.Accounts do
 
       true ->
         Comeonin.Bcrypt.dummy_checkpw()
-        {:error, :not_found}
+        {:error, :unauthorized}
     end
   end
 

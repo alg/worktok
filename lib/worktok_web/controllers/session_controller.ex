@@ -22,7 +22,8 @@ defmodule WorktokWeb.SessionController do
   def delete(conn, _) do
     conn
     |> WorktokWeb.Auth.logout()
+    |> put_flash(:info, "Come back soon!")
     |> redirect(to: page_path(conn, :index))
   end
-  
+
 end

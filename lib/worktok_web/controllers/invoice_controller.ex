@@ -2,7 +2,6 @@ defmodule WorktokWeb.InvoiceController do
   use WorktokWeb, :user_controller
 
   alias Worktok.Billing
-  alias Worktok.Billing.Invoice
 
   def index(conn, _params, current_user) do
     invoices = Billing.list_user_invoices(current_user)
