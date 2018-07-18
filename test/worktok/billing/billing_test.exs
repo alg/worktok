@@ -95,9 +95,37 @@ defmodule Worktok.BillingTest do
     @update_attrs %{hours: "456.7", task: "some updated task", total: "456.7", worked_on: ~D[2011-05-18]}
     @invalid_attrs %{hours: nil, task: nil, total: nil, worked_on: nil}
 
-    test "list_user_works/0 returns all works" do
+    test "list_user_works/1 returns all works" do
       %Work{id: id, user: owner} = work_fixture()
       assert [%Work{id: ^id}] = Billing.list_user_works(owner)
+    end
+
+    test "recent_work/1 returns recent user work" do
+      today = Date.utc_today()
+
+      user = user_fixture()
+      client = client_fixture(user)
+      project = project_fixture(client)
+      user_works =
+        0..8
+        |> Enum.map(&(work_fixture(user, %{task: "task-" <> to_string(&1), project_id: project.id, worked_on: Date.add(today, -&1)})))
+
+      user_2 = user_fixture()
+      client_2 = client_fixture(user, prefix: "C2")
+      project_2 = project_fixture(client_2, prefix: "P2")
+      work_fixture(user_2, %{project_id: project_2.id})
+
+      expected_ids =
+        user_works
+        |> Enum.take(7)
+        |> Enum.map(&(&1.id))
+        |> Enum.sort
+
+      result_ids =
+        Billing.recent_work(user)
+        |> Enum.map(&(&1.id))
+
+      assert result_ids == expected_ids
     end
 
     test "get_user_work!/1 returns the work with given id" do

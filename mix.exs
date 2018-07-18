@@ -45,7 +45,8 @@ defmodule Worktok.Mixfile do
       {:cowboy, "~> 1.0"},
       {:comeonin, "~> 4.1"},
       {:bcrypt_elixir, "~> 1.0"},
-      {:excoveralls, "~> 0.8", only: :test}
+      {:excoveralls, "~> 0.8", only: :test},
+      {:money, "~> 1.2.1"}
     ]
   end
 

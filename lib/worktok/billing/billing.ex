@@ -80,6 +80,23 @@ defmodule Worktok.Billing do
   end
 
   @doc """
+  Returns user recent work.
+  """
+  def recent_work(%User{} = user) do
+    week_ago =
+      Date.utc_today()
+      |> Date.add(-7)
+
+    Work
+    |> Accounts.user_scope_query(user)
+    |> where([w], w.worked_on > ^week_ago)
+    |> where([w], is_nil(w.invoice_id))
+    |> order_by(desc: :worked_on)
+    |> Repo.all
+    |> Repo.preload(project: [:client])
+  end
+
+  @doc """
   Gets a single work.
   """
   def get_user_work!(%User{} = user, id) do

@@ -33,6 +33,7 @@ defmodule WorktokWeb.Router do
 
     get  "/dashboard", DashboardController, :index
     post "/add_work", DashboardController, :add_work
+    delete "/delete_work/:id", DashboardController, :delete_work
 
     resources "/clients", ClientController
     resources "/projects", ProjectController

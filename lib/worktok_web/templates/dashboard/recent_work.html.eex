@@ -1,0 +1,52 @@
+<% date = nil %>
+<div class="row">
+  <div class="col-sm-12">
+    <%= if length(@recent_work) == 0 do %>
+      <hr>
+      <p>No work today yet</p>
+    <% else %>
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th class="col-sm-3">Project</th>
+            <th class="col-sm-5">Task</th>
+            <th class="col-sm-1 text-center">Hours</th>
+            <th class="col-sm-2 text-right">Total</th>
+            <th class="col-sm-1 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for w <- @recent_work do %>
+            <%= if w.worked_on != date do %>
+              <%= if date != nil do %>
+                <tr>
+                  <th colspan="5">&nbsp;</th>
+                </tr>
+              <% end %>
+
+              <% date = w.worked_on %>
+
+              <tr>
+                <th class="warning" colspan="5">
+                  <%= day_label(w.worked_on) %>
+                </th>
+              </tr>
+            <% end %>
+
+            <tr>
+              <td><%= w.project.name %></td>
+              <td><%= w.task %></td>
+              <td class="text-center"><%= w.hours %></td>
+              <td class="text-right"><%= money(w.total) %></td>
+              <td class="text-right">
+                <%= link to: dashboard_path(@conn, :delete_work, w.id), method: :delete do %>
+                  <span class="glyphicon glyphicon-remove"></span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>
