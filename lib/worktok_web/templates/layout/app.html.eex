@@ -8,40 +8,51 @@
     <meta name="author" content="">
 
     <title>Hello Worktok!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
   <body>
-    <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <%= if @current_user do %>
-              <li><%= @current_user.name %></li>
-              <li><%= link "Dashboard", to: dashboard_path(@conn, :index) %></li>
-              <li><%= link "Clients", to: client_path(@conn, :index) %></li>
-              <li><%= link "Projects", to: project_path(@conn, :index) %></li>
-              <li><%= link "Invoices", to: invoice_path(@conn, :index) %></li>
-              <li><%= link "Log out", to: session_path(@conn, :delete), method: "delete" %></li>
-            <% else %>
-              <li><%= link "Register", to: user_path(@conn, :new) %></li>
-              <li><%= link "Log in", to: session_path(@conn, :new) %></li>
-            <% end %>
-          </ul>
-        </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= static_path(@conn, "/images/phoenix.png") %>"
-              alt="Phoenix Framework Logo"/>
+    <header class="navbar navbar-expand-lg navbar-dark flex-column flex-md-row wt-navbar">
+        <a class="navbar-brand mr-0 mr-md-2" href="#">
+          <!-- <img src="/docs/4.1/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt=""> -->
+          Worktok
         </a>
-      </section>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <%= if @current_user do %>
+            <ul class="navbar-nav bd-navbar-nav flex-row">
+              <li class="nav-item"><%= link "Dashboard", to: dashboard_path(@conn, :index), class: "nav-link" %></li>
+              <li class="nav-item"><%= link "Clients", to: client_path(@conn, :index), class: "nav-link" %></li>
+              <li class="nav-item"><%= link "Projects", to: project_path(@conn, :index), class: "nav-link" %></li>
+              <li class="nav-item"><%= link "Invoices", to: invoice_path(@conn, :index), class: "nav-link" %></li>
+              <li class="nav-item"><%= link "Log out", to: session_path(@conn, :delete), method: "delete", class: "nav-link" %></li>
+            </ul>
+            <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+              <li class="nav-item">
+                <span class="navbar-text">
+                  <%= @current_user.name %>
+                </span>
+              </li>
+            </ul>
+          <% else %>
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item"><%= link "Register", to: user_path(@conn, :new), class: "nav-link" %></li>
+              <li class="nav-item"><%= link "Log in", to: session_path(@conn, :new), class: "nav-link" %></li>
+            </ul>
+          <% end %>
+        </div>
     </header>
 
-    <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+    <main role="main" class="container-fluid py-md-3">
+      <div class="container-header">
+        <%= render "flash.html", assigns %>
+      </div>
       <%= render @view_module, @view_template, assigns %>
     </main>
 
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>

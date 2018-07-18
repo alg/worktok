@@ -139,6 +139,31 @@ defmodule Worktok.Billing do
     Work.changeset(work, %{})
   end
 
+  @doc """
+  Prepares changeset for the new work.
+  """
+  def new_work_for_user(%User{} = user) do
+    worked_on = Date.utc_today()
+    project_id = nil
+
+    last_work =
+      Work
+      |> Accounts.user_scope_query(user)
+      |> order_by(desc: :id)
+      |> select([:id, :project_id, :worked_on, :inserted_at])
+      |> limit(1)
+      |> Repo.one
+
+    if last_work != nil do
+      project_id = last_work.project_id
+      if Timex.after?(last_work.inserted_at, Timex.subtract(Timex.now(), Timex.Duration.from_minutes(30))) do
+        worked_on = last_work.worked_on
+      end
+    end
+
+    Work.changeset(%Work{}, %{worked_on: worked_on, project_id: project_id})
+  end
+
   defp put_user(changeset, %User{} = user), do: Ecto.Changeset.put_assoc(changeset, :user, user)
   defp put_client(changeset, %Client{} = client), do: Ecto.Changeset.put_assoc(changeset, :client, client)
   defp put_project(changeset, %Project{} = project), do: Ecto.Changeset.put_assoc(changeset, :project, project)

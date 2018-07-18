@@ -1,41 +1,46 @@
-<%= form_for @conn, dashboard_path(@conn, :add_work), [as: :work], fn f -> %>
+<%= form_for @new_work, dashboard_path(@conn, :add_work), [as: :work], fn f -> %>
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col-lg-1 col-sm-4">
       <div class="form-group">
         <%= select f, :project_id, Enum.map(@projects, &{&1.name, &1.id}), class: "form-control" %>
         <%= error_tag f, :project_id %>
       </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-lg-2 col-sm-6">
       <div class="form-group">
         <%= text_input f, :task, placeholder: "Task", class: "form-control" %>
         <%= error_tag f, :task %>
       </div>
     </div>
-    <div class="col-sm-2">
-      <div class="form-group">
-        <%= submit "Add Work", class: "btn btn-primary" %>
-      </div>
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-sm-4">
-      <div class="form-group">
-        <%= text_input f, :hours, placeholder: "Hours", class: "form-control" %>
+    <div class="col-lg-1 col-sm-4">
+      <div class="input-group">
+        <%= text_input f, :hours, placeholder: "Spent", class: "form-control" %>
+        <div class="input-group-append">
+          <span class="input-group-text">hrs</span>
+        </div>
         <%= error_tag f, :hours %>
       </div>
     </div>
-    <div class="col-sm-4">
-      <div class="form-group">
+    <div class="col-lg-1 col-sm-4">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">$</span>
+        </div>
         <%= text_input f, :total, placeholder: "Total", class: "form-control" %>
         <%= error_tag f, :total %>
       </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-lg-1 col-sm-4">
       <div class="form-group">
         <%= text_input f, :worked_on, class: "form-control" %>
         <%= error_tag f, :worked_on %>
+      </div>
+    </div>
+
+    <div class="col-lg-1 col-sm-2">
+      <div class="form-group">
+        <%= submit "Add Work", class: "btn btn-primary" %>
       </div>
     </div>
   </div>

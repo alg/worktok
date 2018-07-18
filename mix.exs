@@ -22,7 +22,7 @@ defmodule Worktok.Mixfile do
   def application do
     [
       mod: {Worktok.Application, []},
-      extra_applications: [:logger, :runtime_tools, :comeonin]
+      extra_applications: [:logger, :runtime_tools, :comeonin, :timex]
     ]
   end
 
@@ -46,7 +46,8 @@ defmodule Worktok.Mixfile do
       {:comeonin, "~> 4.1"},
       {:bcrypt_elixir, "~> 1.0"},
       {:excoveralls, "~> 0.8", only: :test},
-      {:money, "~> 1.2.1"}
+      {:money, "~> 1.2.1"},
+      {:timex, "~> 3.0"}
     ]
   end
 

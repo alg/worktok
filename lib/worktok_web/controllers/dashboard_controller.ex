@@ -1,18 +1,28 @@
 defmodule WorktokWeb.DashboardController do
   use WorktokWeb, :user_controller
 
-  def index(conn, _, current_user) do
+  def index(conn, params, current_user) do
     projects =
       Worktok.Registry.list_user_projects(current_user)
       |> Worktok.Repo.preload(:client)
 
-    works =
+    recent_work =
       Worktok.Billing.recent_work(current_user)
+      |> Enum.group_by(&(&1.worked_on))
+      |> Enum.sort(fn {k1, _v}, {k2, _v2} -> k1 >= k2 end)
 
-    render(conn, "index.html", projects: projects, recent_work: works)
+    new_work = case params do
+      %{"work" => work_params} ->
+        Worktok.Billing.Work.changeset(%Worktok.Billing.Work{}, work_params)
+
+      _ ->
+        Worktok.Billing.new_work_for_user(current_user)
+    end
+
+    render(conn, "index.html", projects: projects, recent_work: recent_work, new_work: new_work)
   end
 
-  def add_work(conn, %{"work" => work_params}, current_user) do
+  def add_work(conn, params = %{"work" => work_params}, current_user) do
     case Worktok.Billing.create_work(current_user, work_params) do
       {:ok, work} ->
         conn
@@ -22,7 +32,7 @@ defmodule WorktokWeb.DashboardController do
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Please review your work")
-        |> index(%{}, current_user)
+        |> index(params, current_user)
     end
   end
 
