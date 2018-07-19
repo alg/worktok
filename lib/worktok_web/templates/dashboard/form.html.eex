@@ -1,8 +1,8 @@
-<%= form_for @new_work, dashboard_path(@conn, :add_work), [as: :work], fn f -> %>
+<%= form_for @new_work, dashboard_path(@conn, :add_work), [as: :work, id: "new_work"], fn f -> %>
   <div class="row">
     <div class="col-lg-1 col-sm-4">
       <div class="form-group">
-        <%= select f, :project_id, Enum.map(@projects, &{&1.name, &1.id}), class: "form-control" %>
+        <%= select f, :project_id, Enum.map(@projects, &[key: &1.name, value: &1.id, "data-rate": &1.rate]), class: "form-control" %>
         <%= error_tag f, :project_id %>
       </div>
     </div>

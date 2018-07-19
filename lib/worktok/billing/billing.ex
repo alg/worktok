@@ -106,6 +106,7 @@ defmodule Worktok.Billing do
     |> Repo.preload(:user)
   end
 
+
   @doc """
   Creates a work.
   """
@@ -142,10 +143,10 @@ defmodule Worktok.Billing do
   @doc """
   Prepares changeset for the new work.
   """
-  def new_work_for_user(%User{} = user) do
-    worked_on = Date.utc_today()
-    project_id = nil
-
+  def new_work(%User{} = _current_user, %{"work" => work_params}) do
+    Work.changeset(%Work{}, work_params)
+  end
+  def new_work(%User{} = user, _) do
     last_work =
       Work
       |> Accounts.user_scope_query(user)
@@ -154,11 +155,18 @@ defmodule Worktok.Billing do
       |> limit(1)
       |> Repo.one
 
-    if last_work != nil do
-      project_id = last_work.project_id
-      if Timex.after?(last_work.inserted_at, Timex.subtract(Timex.now(), Timex.Duration.from_minutes(30))) do
-        worked_on = last_work.worked_on
-      end
+    {project_id, worked_on} = case last_work do
+      nil ->
+        {nil, Date.utc_today()}
+
+      work ->
+        cond do
+          Timex.after?(last_work.inserted_at, Timex.subtract(Timex.now(), Timex.Duration.from_minutes(30))) ->
+            {work.project_id, work.worked_on}
+
+          true ->
+            {work.project_id, Date.utc_today()}
+        end
     end
 
     Work.changeset(%Work{}, %{worked_on: worked_on, project_id: project_id})

@@ -30,7 +30,7 @@
                 <td class="text-right"><%= money(w.total) %></td>
                 <td class="text-right">
                   <%= link to: dashboard_path(@conn, :delete_work, w.id), method: :delete do %>
-                    <span class="glyphicon glyphicon-remove"></span>
+                    <span class="glyphicon glyphicon-remove">A</span>
                   <% end %>
                 </td>
               </tr>

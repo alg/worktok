@@ -80,6 +80,17 @@ defmodule Worktok.Registry do
   end
 
   @doc """
+  Returns the list of user projects.
+  """
+  def list_active_user_projects(%Accounts.User{} = user) do
+    Project
+    |> Accounts.user_scope_query(user)
+    |> where([p], p.active == true)
+    |> Repo.all()
+    |> Repo.preload([:user, :client])
+  end
+
+  @doc """
   Gets a single project.
   """
   def get_user_project!(%Accounts.User{} = user, id) do

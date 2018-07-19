@@ -3,21 +3,15 @@ defmodule WorktokWeb.DashboardController do
 
   def index(conn, params, current_user) do
     projects =
-      Worktok.Registry.list_user_projects(current_user)
-      |> Worktok.Repo.preload(:client)
+      Worktok.Registry.list_active_user_projects(current_user)
 
     recent_work =
       Worktok.Billing.recent_work(current_user)
       |> Enum.group_by(&(&1.worked_on))
       |> Enum.sort(fn {k1, _v}, {k2, _v2} -> k1 >= k2 end)
 
-    new_work = case params do
-      %{"work" => work_params} ->
-        Worktok.Billing.Work.changeset(%Worktok.Billing.Work{}, work_params)
-
-      _ ->
-        Worktok.Billing.new_work_for_user(current_user)
-    end
+    new_work =
+      Worktok.Billing.new_work(current_user, params)
 
     render(conn, "index.html", projects: projects, recent_work: recent_work, new_work: new_work)
   end
