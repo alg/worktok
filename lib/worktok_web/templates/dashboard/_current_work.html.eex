@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h3>Current work</h3>
+    <%= if length(@current_work) == 0 do %>
+      <p>No unpaid work</p>
+    <% else %>
+      <table class="table condensed">
+        <%= for {project_id, project_name, total} <- @current_work do %>
+          <tr>
+            <th><%= project_name %></th>
+            <td class="text-right col-sm-1"><%= money total %></td>
+            <td class="text-right">
+              <%= link to: dashboard_path(@conn, :create_invoice, project_id), method: :post do %>
+                <span class="glyphicon glyphicon-chevron-down">C</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+  </div>
+</div>

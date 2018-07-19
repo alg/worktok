@@ -82,18 +82,31 @@ defmodule Worktok.Billing do
   @doc """
   Returns user recent work.
   """
-  def recent_work(%User{} = user) do
-    week_ago =
-      Timex.today()
-      |> Timex.beginning_of_month()
-
+  def recent_work(%User{} = user, since_date \\ Timex.beginning_of_month(Timex.today())) do
     Work
     |> Accounts.user_scope_query(user)
-    |> where([w], w.worked_on > ^week_ago)
+    |> where([w], w.worked_on > ^since_date)
     |> where([w], is_nil(w.invoice_id))
     |> order_by(desc: :worked_on)
     |> Repo.all
     |> Repo.preload(project: [:client])
+  end
+
+  @doc """
+  Returns summary of current (uninvoiced) work in the form:
+
+  [ {project_id, project_name, total} ]
+  """
+  def current_work(%User{id: user_id}) do
+    uninvoiced =
+      from w in Work,
+        join: p in Project, on: w.project_id == p.id,
+        select: {p.id, p.name, sum(w.total)},
+        where: w.user_id == ^user_id and is_nil(w.invoice_id),
+        group_by: p.id,
+        order_by: [p.name, p.id]
+
+    Repo.all(uninvoiced)
   end
 
   @doc """

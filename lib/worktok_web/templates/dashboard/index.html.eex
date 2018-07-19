@@ -1,11 +1,12 @@
-<div class="container-sidebar">
-  <%= render "_goals.html", assigns %>
-  <%= render "_earnings.html", assigns %>
-  <%= render "_current_work.html", assigns %>
-  <%= render "_pending_invoices.html", assigns %>
-</div>
-
-<div class="container-body">
-<%= render "form.html", assigns %>
-<%= render "recent_work.html", assigns %>
+<div class="row">
+  <div class="col-xl-10 col-sm-8">
+  <%= render "_form.html", assigns %>
+  <%= render "_recent_work.html", assigns %>
+  </div>
+  <div class="col-xl-2 col-sm-4">
+    <%= render "_goals.html", assigns %>
+    <%= render "_earnings.html", assigns %>
+    <%= render "_current_work.html", assigns %>
+    <%= render "_pending_invoices.html", assigns %>
+  </div>
 </div>

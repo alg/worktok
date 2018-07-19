@@ -111,7 +111,7 @@ defmodule Worktok.BillingTest do
         |> Enum.sort
 
       result_ids =
-        Billing.recent_work(user)
+        Billing.recent_work(user, Timex.subtract(Timex.today(), Timex.Duration.from_days(7)))
         |> Enum.map(&(&1.id))
 
       assert result_ids == expected_ids
@@ -181,6 +181,13 @@ defmodule Worktok.BillingTest do
       work_fixture(user, %{project_id: project_id, worked_on: month_ago, total: 40})
 
       assert [this_week: Decimal.new(10), this_month: Decimal.new(30), unpaid: Decimal.new(70)] == Billing.earnings(user)
+    end
+
+    test "current_work/1" do
+      %Work{project_id: project_1_id, user: user} = work_fixture(%{total: 1})
+      %Work{project_id: project_2_id} = work_fixture(user, %{total: 2})
+
+      assert [{project_1_id, "Some Project", Decimal.new(1)}, {project_2_id, "Some Project", Decimal.new(2)}] == Billing.current_work(user)
     end
   end
 end

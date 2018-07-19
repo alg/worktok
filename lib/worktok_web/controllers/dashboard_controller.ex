@@ -16,7 +16,10 @@ defmodule WorktokWeb.DashboardController do
     earnings =
       Worktok.Billing.earnings(current_user)
 
-    render(conn, "index.html", projects: projects, recent_work: recent_work, new_work: new_work, earnings: earnings)
+    current_work =
+      Worktok.Billing.current_work(current_user)
+      
+    render(conn, "index.html", projects: projects, recent_work: recent_work, new_work: new_work, earnings: earnings, current_work: current_work)
   end
 
   def add_work(conn, params = %{"work" => work_params}, current_user) do

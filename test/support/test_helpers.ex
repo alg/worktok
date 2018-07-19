@@ -26,7 +26,7 @@ defmodule Worktok.TestHelpers do
       active: true,
       email: "client@email.com",
       name: "Some Client",
-      prefix: "SC",
+      prefix: "SC#{:rand.uniform(100000)}",
       rate: "100.25"
     })
 
@@ -39,7 +39,7 @@ defmodule Worktok.TestHelpers do
     attrs = Enum.into(attrs, %{
       active: true,
       name: "Some Project",
-      prefix: "SP",
+      prefix: "SP#{:rand.uniform(100000)}",
       rate: "50.25",
       client_id: client.id
     })

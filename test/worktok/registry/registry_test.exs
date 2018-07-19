@@ -18,7 +18,7 @@ defmodule Worktok.RegistryTest do
 
     test "create_client/1 with valid data creates a client" do
       user = user_fixture()
-      client = client_fixture(user)
+      client = client_fixture(user, %{prefix: "SC"})
       assert client.active == true
       assert client.email == "client@email.com"
       assert client.name == "Some Client"
@@ -97,7 +97,7 @@ defmodule Worktok.RegistryTest do
     test "create_project/1 with valid data creates a project" do
       %Accounts.User{id: user_id} = user = user_fixture()
       %Registry.Client{id: client_id} = client = client_fixture(user)
-      project = project_fixture(client)
+      project = project_fixture(client, %{prefix: "SP"})
       project = Repo.preload(project, [:user, :client])
 
       assert project.active == true
