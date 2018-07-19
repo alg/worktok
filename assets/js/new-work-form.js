@@ -31,5 +31,7 @@ export var NewWorkForm = {
     }
 
     hours.on("change", updateTotal).on('keyup', updateTotal)
+
+    $('input#work_task').focus()
   }
 }
