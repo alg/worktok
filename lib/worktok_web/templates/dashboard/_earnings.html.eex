@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h3>Earnings</h3>
+    <table class="table condensed">
+      <tr>
+        <th>This week</th>
+        <td class="text-right"><%= money @earnings[:this_week] %></td>
+      </tr>
+      <tr>
+        <th>This month</th>
+        <td class="text-right"><%= money @earnings[:this_month] %></td>
+      </tr>
+      <tr>
+        <th>Unpaid</th>
+        <td class="text-right"><%= money @earnings[:unpaid] %></td>
+      </tr>
+    </table>
+  </div>
+</div>

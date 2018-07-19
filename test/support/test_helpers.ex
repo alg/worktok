@@ -58,7 +58,16 @@ defmodule Worktok.TestHelpers do
     invoice
   end
 
-  def work_fixture(%Accounts.User{} = user, attrs \\ %{}) do
+
+  def work_fixture() do
+    work_fixture(%{})
+  end
+  def work_fixture(attrs) do
+    user = user_fixture()
+    work_fixture(user, attrs)
+  end
+
+  def work_fixture(%Accounts.User{} = user, attrs) do
     attrs = Enum.into(attrs, %{
       task: "Sample task",
       hours: "2",
@@ -66,7 +75,19 @@ defmodule Worktok.TestHelpers do
       worked_on: "2018-10-24"
     })
 
+    attrs = case Map.get(attrs, :project_id) do
+      nil ->
+        client = client_fixture(user)
+        project = project_fixture(client)
+
+        Enum.into(attrs, %{project_id: project.id})
+
+      _ -> attrs
+    end
+
     {:ok, work} = Billing.create_work(user, attrs)
     work
   end
+
+
 end

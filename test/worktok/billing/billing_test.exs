@@ -2,6 +2,8 @@ defmodule Worktok.BillingTest do
   use Worktok.DataCase
 
   alias Worktok.Billing
+  alias Worktok.Billing.Work
+  alias Worktok.Billing.Invoice
 
   defp invoice_fixture(attrs \\ %{}) do
     user = user_fixture()
@@ -12,19 +14,8 @@ defmodule Worktok.BillingTest do
     invoice
   end
 
-  def work_fixture(attrs \\ %{}) do
-    user = user_fixture()
-    client = client_fixture(user)
-    project = project_fixture(client)
-    work = work_fixture(user, Enum.into(attrs, %{project_id: project.id}))
-
-    work
-  end
-
 
   describe "invoices" do
-    alias Worktok.Billing.Invoice
-
     @valid_attrs %{forgiven: true, hours: "120.5", paid_on: ~D[2010-04-17], ref: "some ref", total: "120.5"}
     @update_attrs %{forgiven: false, hours: "456.7", paid_on: ~D[2011-05-18], ref: "some updated ref", total: "456.7"}
     @invalid_attrs %{forgiven: nil, hours: nil, paid_on: nil, ref: nil, total: nil}
@@ -89,8 +80,6 @@ defmodule Worktok.BillingTest do
   end
 
   describe "works" do
-    alias Worktok.Billing.Work
-
     @valid_attrs %{hours: "120.5", task: "some task", total: "120.5", worked_on: ~D[2010-04-17]}
     @update_attrs %{hours: "456.7", task: "some updated task", total: "456.7", worked_on: ~D[2011-05-18]}
     @invalid_attrs %{hours: nil, task: nil, total: nil, worked_on: nil}
@@ -177,6 +166,21 @@ defmodule Worktok.BillingTest do
     test "change_work/1 returns a work changeset" do
       work = work_fixture()
       assert %Ecto.Changeset{} = Billing.change_work(work)
+    end
+  end
+
+
+  describe "helpers" do
+    test "earnings/1" do
+      today = Timex.today()
+      week_ago = Timex.subtract(today, Timex.Duration.from_days(7))
+      month_ago = Timex.subtract(today, Timex.Duration.from_days(31))
+
+      %Work{project_id: project_id, user: user} = work_fixture(%{worked_on: today, total: 10})
+      work_fixture(user, %{project_id: project_id, worked_on: week_ago, total: 20})
+      work_fixture(user, %{project_id: project_id, worked_on: month_ago, total: 40})
+
+      assert [this_week: Decimal.new(10), this_month: Decimal.new(30), unpaid: Decimal.new(70)] == Billing.earnings(user)
     end
   end
 end

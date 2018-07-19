@@ -1,12 +1,8 @@
 <div class="container-sidebar">
-  <div class="row">
-    <div class="col-sm-6">
-      A
-    </div>
-    <div class="col-sm-6">
-      B
-    </div>
-  </div>
+  <%= render "_goals.html", assigns %>
+  <%= render "_earnings.html", assigns %>
+  <%= render "_current_work.html", assigns %>
+  <%= render "_pending_invoices.html", assigns %>
 </div>
 
 <div class="container-body">

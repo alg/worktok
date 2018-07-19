@@ -176,4 +176,32 @@ defmodule Worktok.Billing do
   defp put_client(changeset, %Client{} = client), do: Ecto.Changeset.put_assoc(changeset, :client, client)
   defp put_project(changeset, %Project{} = project), do: Ecto.Changeset.put_assoc(changeset, :project, project)
 
+  @doc """
+  Looks up user earnigns in the given periods.
+  """
+  def earnings(%User{id: user_id}) do
+    user_work =
+      from w in Work,
+        select: sum(w.total),
+        where: w.user_id == ^user_id
+
+    this_week =
+      from w in user_work,
+        where: w.worked_on >= ^Timex.beginning_of_week(Timex.today())
+
+    this_month =
+      from w in user_work,
+        where: w.worked_on >= ^Timex.beginning_of_month(Timex.today())
+
+    unpaid =
+      from w in user_work,
+        left_join: i in Invoice, on: w.invoice_id == i.id,
+        where: is_nil(w.invoice_id) or
+               (is_nil(i.paid_on) and i.forgiven == false)
+
+    [ this_week: Repo.one!(this_week),
+      this_month: Repo.one!(this_month),
+      unpaid: Repo.one!(unpaid)
+    ]
+  end
 end
