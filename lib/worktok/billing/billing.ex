@@ -84,8 +84,8 @@ defmodule Worktok.Billing do
   """
   def recent_work(%User{} = user) do
     week_ago =
-      Date.utc_today()
-      |> Date.add(-7)
+      Timex.today()
+      |> Timex.beginning_of_month()
 
     Work
     |> Accounts.user_scope_query(user)
