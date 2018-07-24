@@ -84,6 +84,13 @@ defmodule Worktok.RegistryTest do
       assert [] = Registry.list_user_projects(foo)
     end
 
+    test "list_active_user_projects/1" do
+      client = %Registry.Client{user: owner} = client_fixture()
+      %Project{id: active_id} = project_fixture(client)
+      project_fixture(client, %{active: false})
+      assert [^active_id] = Registry.list_active_user_projects(owner) |> Enum.map(&(&1.id))
+    end
+
     test "get_user_project!/2 returns the project with given id" do
       %Project{id: id, user: owner} = project_fixture()
       assert %Project{id: ^id} = Registry.get_user_project!(owner, id)

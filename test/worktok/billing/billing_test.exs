@@ -85,6 +85,25 @@ defmodule Worktok.BillingTest do
     @update_attrs %{hours: "456.7", task: "some updated task", total: "456.7", worked_on: ~D[2011-05-18]}
     @invalid_attrs %{hours: nil, task: nil, total: nil, worked_on: nil}
 
+    test "new_work/2 with params" do
+      user = user_fixture()
+      work_params = %{"hours" => "100", "total" => "7500", "task" => "Design"}
+      hours = Decimal.new(100)
+      total = Decimal.new(7500)
+      assert %Ecto.Changeset{changes: %{hours: ^hours, total: ^total, task: "Design"}} = Billing.new_work(user, %{"work" => work_params})
+    end
+
+    test "new_work/2 without params and last work" do
+      user = user_fixture()
+      today = Date.utc_today()
+      assert %Ecto.Changeset{changes: %{worked_on: ^today}} = Billing.new_work(user, nil)
+    end
+
+    test "new_work/2 without params and with last work" do
+      %Work{user: user, project_id: project_id, worked_on: worked_on} = work_fixture()
+      assert %Ecto.Changeset{changes: %{project_id: ^project_id, worked_on: ^worked_on}} = Billing.new_work(user, nil)
+    end
+
     test "list_user_works/1 returns all works" do
       %Work{id: id, user: owner} = work_fixture()
       assert [%Work{id: ^id}] = Billing.list_user_works(owner)
