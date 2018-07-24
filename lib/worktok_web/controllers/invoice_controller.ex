@@ -9,7 +9,10 @@ defmodule WorktokWeb.InvoiceController do
   end
 
   def show(conn, %{"id" => id}, current_user) do
-    invoice = Billing.get_user_invoice!(current_user, id)
+    invoice =
+      Billing.get_user_invoice!(current_user, id)
+      |> Worktok.Repo.preload([:client, :project, :works])
+
     render(conn, "show.html", invoice: invoice)
   end
 

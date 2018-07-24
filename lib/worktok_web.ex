@@ -57,11 +57,21 @@ defmodule WorktokWeb do
       import WorktokWeb.ErrorHelpers
       import WorktokWeb.Gettext
 
+      def date(nil), do: nil
+      def date(d) do
+        Timex.format!(d, "%b %d, %Y", :strftime)
+      end
+      
       def money(nil), do: money(Decimal.new(0))
       def money(v) do
         cents = trunc(Decimal.to_float(v) * 100)
-        to_string(Money.new(cents))
+        Money.new(cents, :USD)
       end
+
+      def yes_no(nil), do: "No"
+      def yes_no(false), do: "No"
+      def yes_no(0), do: "No"
+      def yes_no(_), do: "Yes"
     end
   end
 
