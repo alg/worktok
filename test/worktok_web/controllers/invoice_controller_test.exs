@@ -35,7 +35,7 @@ defmodule WorktokWeb.InvoiceControllerTest do
   defp create_invoice(%{user: user}) do
     client = client_fixture(user)
     project = project_fixture(client)
-    invoice = invoice_fixture(user, project)
+    invoice = invoice_fixture(project)
 
     {:ok, invoice: invoice}
   end

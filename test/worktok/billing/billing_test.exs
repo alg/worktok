@@ -4,12 +4,13 @@ defmodule Worktok.BillingTest do
   alias Worktok.Billing
   alias Worktok.Billing.Work
   alias Worktok.Billing.Invoice
+  alias Worktok.Registry.Project
 
   defp invoice_fixture(attrs \\ %{}) do
     user = user_fixture()
     client = client_fixture(user)
     project = project_fixture(client)
-    invoice = invoice_fixture(user, project, attrs)
+    invoice = invoice_fixture(project, attrs)
 
     invoice
   end
@@ -35,7 +36,7 @@ defmodule Worktok.BillingTest do
       client = client_fixture(user)
       project = project_fixture(client) |> Worktok.Repo.preload(:client)
 
-      assert {:ok, %Invoice{} = invoice} = Billing.create_invoice(user, project, @valid_attrs)
+      assert {:ok, %Invoice{} = invoice} = Billing.create_invoice(project, @valid_attrs)
       assert invoice.forgiven == true
       assert invoice.hours == Decimal.new("120.5")
       assert invoice.paid_on == ~D[2010-04-17]
@@ -48,7 +49,7 @@ defmodule Worktok.BillingTest do
       client = client_fixture(user)
       project = project_fixture(client) |> Worktok.Repo.preload(:client)
 
-      assert {:error, %Ecto.Changeset{}} = Billing.create_invoice(user, project, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Billing.create_invoice(project, @invalid_attrs)
     end
 
     test "update_invoice/2 with valid data updates the invoice" do
@@ -189,5 +190,30 @@ defmodule Worktok.BillingTest do
 
       assert [{project_1_id, "Some Project", Decimal.new(1)}, {project_2_id, "Some Project", Decimal.new(2)}] == Billing.current_work(user)
     end
+
+    test "create_invoice_from_unpaid_work/2 when work is present" do
+      project = %Project{prefix: prefix} = project_fixture()
+      {:ok, invoice} = Billing.create_invoice(project, %{ref: "REF123", total: 1, hours: 1})
+
+      work_fixture(project, %{hours: 1, total: 5})
+      |> Repo.preload(:invoice)
+      |> Billing.change_work()
+      |> Ecto.Changeset.put_assoc(:invoice, invoice)
+      |> Repo.update()
+
+      work_fixture(project, %{hours: 2, total: 10})
+
+      hours = Decimal.new(2)
+      total = Decimal.new(10)
+      ref = "#{prefix}#{Timex.format!(Timex.today(), "%Y%m%d", :strftime)}"
+      {:ok, invoice} = Billing.create_invoice_from_unpaid_work(project)
+      assert %Invoice{hours: ^hours, total: ^total, ref: ^ref, paid_on: nil, forgiven: false} = invoice
+
+      invoice = Repo.preload(invoice, :works)
+      assert Enum.count(invoice.works) == 1
+    end
+
+
+    # test "create_invoice_from_unpaid_work/2 when work is missing"
   end
 end

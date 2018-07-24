@@ -9,7 +9,7 @@
 
   <li>
     <strong>Total:</strong>
-    <%= @invoice.total %>
+    <%= money @invoice.total %>
   </li>
 
   <li>

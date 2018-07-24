@@ -69,12 +69,12 @@ defmodule Worktok.RegistryTest do
     @update_attrs %{active: false, name: "Some updated name", prefix: "SP2", rate: "456.7"}
     @invalid_attrs %{active: nil, name: nil, prefix: nil, rate: nil}
 
-    defp project_fixture do
-      user = user_fixture()
-      client = client_fixture(user)
-      project = project_fixture(client)
-      project
-    end
+    # defp project_fixture do
+    #   user = user_fixture()
+    #   client = client_fixture(user)
+    #   project = project_fixture(client)
+    #   project
+    # end
 
     test "list_user_projects/1 returns all user projects" do
       %Project{id: id, user: owner} = project_fixture()

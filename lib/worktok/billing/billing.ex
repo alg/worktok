@@ -8,6 +8,7 @@ defmodule Worktok.Billing do
 
   alias Worktok.Accounts
   alias Worktok.Accounts.User
+  alias Worktok.Billing.Work
   alias Worktok.Billing.Invoice
   alias Worktok.Registry.{Client,Project}
 
@@ -18,7 +19,7 @@ defmodule Worktok.Billing do
     Invoice
     |> Accounts.user_scope_query(user)
     |> Repo.all
-    |> Repo.preload(:user)
+    |> Repo.preload([:user, :client, :project])
   end
 
   @doc """
@@ -34,13 +35,44 @@ defmodule Worktok.Billing do
   @doc """
   Creates a invoice.
   """
-  def create_invoice(%User{} = user, %Project{} = project, attrs \\ %{}) do
+  def create_invoice(%Project{user: user} = project, attrs \\ %{}) do
     %Invoice{}
     |> Invoice.changeset(attrs)
     |> put_user(user)
     |> put_project(project)
     |> put_client(project.client)
     |> Repo.insert()
+  end
+
+  def create_invoice_from_unpaid_work(%Project{id: project_id, prefix: prefix} = project) do
+    uninvoiced_project_work =
+      from w in Work,
+        where: w.project_id == ^project_id and is_nil(w.invoice_id)
+
+    count =
+      from w in uninvoiced_project_work,
+        select: count(w.id)
+
+    cond do
+      Repo.one!(count) > 0 ->
+        {hours, total} =
+          (from w in uninvoiced_project_work,
+            select: {sum(w.hours), sum(w.total)})
+            |> Repo.one!
+
+        today =
+          Timex.format!(Timex.today(), "%Y%m%d", :strftime)
+
+        {:ok, invoice = %Invoice{id: invoice_id}} =
+          create_invoice(project, %{ref: prefix <> today, hours: hours, total: total})
+
+        uninvoiced_project_work
+          |> Repo.update_all(set: [invoice_id: invoice_id])
+
+        {:ok, invoice}
+      true ->
+        :nothing
+    end
   end
 
   @doc """

@@ -57,6 +57,7 @@ defmodule WorktokWeb do
       import WorktokWeb.ErrorHelpers
       import WorktokWeb.Gettext
 
+      def money(nil), do: money(Decimal.new(0))
       def money(v) do
         cents = trunc(Decimal.to_float(v) * 100)
         to_string(Money.new(cents))
