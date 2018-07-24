@@ -13,7 +13,7 @@ defmodule Worktok.Billing.Invoice do
     belongs_to :user, Worktok.Accounts.User
     belongs_to :client, Worktok.Registry.Client
     belongs_to :project, Worktok.Registry.Project
-    has_many :works, Worktok.Billing.Work
+    has_many :works, Worktok.Billing.Work, on_delete: :nilify_all
 
     timestamps()
   end

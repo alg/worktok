@@ -215,5 +215,16 @@ defmodule Worktok.BillingTest do
 
 
     # test "create_invoice_from_unpaid_work/2 when work is missing"
+
+    test "delete_invoice/1 with work should unlink work" do
+      project = project_fixture()
+      work = work_fixture(project)
+      {:ok, invoice} = Billing.create_invoice_from_unpaid_work(project)
+
+      assert Billing.delete_invoice(invoice)
+
+      work = Repo.get!(Work, work.id)
+      assert work.invoice_id == nil, "Deleting invoices should unlink their work"
+    end
   end
 end
