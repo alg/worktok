@@ -32,7 +32,7 @@ defmodule WorktokWeb.SessionControllerTest do
     test "successful", %{conn: conn} do
       conn = delete conn, session_path(conn, :delete)
       assert get_flash(conn, :info) == "Come back soon!"
-      assert redirected_to(conn) == dashboard_path(conn, :index)
+      assert redirected_to(conn) == page_path(conn, :index)
       assert conn.cookies == %{}
     end
   end

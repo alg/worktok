@@ -23,7 +23,7 @@ defmodule WorktokWeb.SessionController do
     conn
     |> WorktokWeb.Auth.logout()
     |> put_flash(:info, "Come back soon!")
-    |> redirect(to: dashboard_path(conn, :index))
+    |> redirect(to: page_path(conn, :index))
   end
 
 end

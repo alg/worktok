@@ -29,7 +29,6 @@ defmodule WorktokWeb.DashboardController do
     case Billing.create_work(current_user, work_params) do
       {:ok, work} ->
         conn
-        |> put_flash(:info, "Work registered successfully.")
         |> redirect(to: dashboard_path(conn, :index))
 
       {:error, %Ecto.Changeset{} = changeset} ->

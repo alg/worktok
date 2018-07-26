@@ -1,68 +1,66 @@
-<div class="container">
-  <div class="page-header hidden-print">
-    <h2><%= @invoice.ref %></h2>
-  </div>
+<div class="page-header hidden-print">
+  <h2><%= @invoice.ref %></h2>
+</div>
 
-  <div class="row">
-    <div class="col-md-10 col-md-offset-1 col-xs-12">
-      <div class="invoice-header">
-        <div class="row">
-          <div class="col-12 text-right">
-            <strong>User Name</strong><br>
-            <%= "Address..." %>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-3 col-sm-2">Invoice for:</div>
-          <div class="col-xs-9 col-sm-10"><%= @invoice.client.name %></div>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-3 col-sm-2">Date:</div>
-          <div class="col-xs-9 col-sm-10"><%= date @invoice.inserted_at %></div>
-        </div>
-
-        <div class="row">
-          <div class="col-xs-3 col-sm-2">Ref #:</div>
-          <div class="col-xs-9 col-sm-10"><%= @invoice.ref %></div>
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+    <div class="invoice-header">
+      <div class="row">
+        <div class="col-12 text-right">
+          <strong>User Name</strong><br>
+          <%= "Address..." %>
         </div>
       </div>
 
-      <div class="invoice-table">
-        <div class="row">
-          <div class="col-12">
-            <table class="table table-condensed table-stripped">
-              <thead>
-                <tr>
-                  <th class="w-25">Date</th>
-                  <th class="w-50">Task</th>
-                  <th class="w-25 text-center">Hours</th>
-                  <th class="w-25 text-right">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <%= for w <- @invoice.works do %>
-                  <tr>
-                    <td><%= date w.worked_on %></td>
-                    <td><%= w.task %></td>
-                    <td class="text-center"><%= w.hours %></td>
-                    <td class="text-right"><%= money w.total %></td>
-                  </tr>
-                <% end %>
-                <tr class="info">
-                  <th>TOTAL</th>
-                  <th>&nbsp;</th>
-                  <th class="text-center"><%= @invoice.hours %></th>
-                  <th class="text-right"><%= money @invoice.total %></th>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+      <div class="row">
+        <div class="col-xs-3 col-sm-2">Invoice for:</div>
+        <div class="col-xs-9 col-sm-10"><%= @invoice.client.name %></div>
+      </div>
 
+      <div class="row">
+        <div class="col-xs-3 col-sm-2">Date:</div>
+        <div class="col-xs-9 col-sm-10"><%= date @invoice.inserted_at %></div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-3 col-sm-2">Ref #:</div>
+        <div class="col-xs-9 col-sm-10"><%= @invoice.ref %></div>
+      </div>
+    </div>
+
+    <div class="invoice-table">
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-condensed table-stripped">
+            <thead>
+              <tr>
+                <th class="w-25">Date</th>
+                <th class="w-50">Task</th>
+                <th class="w-25 text-center">Hours</th>
+                <th class="w-25 text-right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for w <- @invoice.works do %>
+                <tr>
+                  <td><%= date w.worked_on %></td>
+                  <td><%= w.task %></td>
+                  <td class="text-center"><%= w.hours %></td>
+                  <td class="text-right"><%= money w.total %></td>
+                </tr>
+              <% end %>
+              <tr class="info">
+                <th>TOTAL</th>
+                <th>&nbsp;</th>
+                <th class="text-center"><%= @invoice.hours %></th>
+                <th class="text-right"><%= money @invoice.total %></th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
     </div>
+
   </div>
 </div>

@@ -1,20 +1,20 @@
 <%= form_for @new_work, dashboard_path(@conn, :add_work), [as: :work, id: "new_work"], fn f -> %>
   <div class="row">
-    <div class="col-lg-1 col-sm-4">
+    <div class="col-lg-2 col-sm-4">
       <div class="form-group">
-        <%= select f, :project_id, Enum.map(@projects, &[key: &1.name, value: &1.id, "data-rate": &1.rate]), class: "form-control" %>
+        <%= select f, :project_id, Enum.map(@projects, &[key: &1.name, value: &1.id, "data-rate": &1.rate]), class: "form-control form-control-sm" %>
         <%= error_tag f, :project_id %>
       </div>
     </div>
-    <div class="col-lg-2 col-sm-6">
+    <div class="col-lg-3 col-sm-6">
       <div class="form-group">
-        <%= text_input f, :task, placeholder: "Task", class: "form-control" %>
+        <%= text_input f, :task, placeholder: "Task", class: "form-control form-control-sm" %>
         <%= error_tag f, :task %>
       </div>
     </div>
 
-    <div class="col-lg-1 col-sm-4">
-      <div class="input-group">
+    <div class="col-lg-2 col-sm-4">
+      <div class="input-group input-group-sm">
         <%= text_input f, :hours, placeholder: "Spent", class: "form-control" %>
         <div class="input-group-append">
           <span class="input-group-text">hrs</span>
@@ -22,8 +22,8 @@
         <%= error_tag f, :hours %>
       </div>
     </div>
-    <div class="col-lg-1 col-sm-4">
-      <div class="input-group">
+    <div class="col-lg-2 col-sm-4">
+      <div class="input-group input-group-sm">
         <div class="input-group-prepend">
           <span class="input-group-text">$</span>
         </div>
@@ -31,16 +31,18 @@
         <%= error_tag f, :total %>
       </div>
     </div>
-    <div class="col-lg-1 col-sm-4">
+    <div class="col-lg-2 col-sm-4">
       <div class="form-group">
-        <%= text_input f, :worked_on, class: "form-control" %>
+        <%= text_input f, :worked_on, class: "form-control form-control-sm" %>
         <%= error_tag f, :worked_on %>
       </div>
     </div>
 
     <div class="col-lg-1 col-sm-2">
       <div class="form-group">
-        <%= submit "Add Work", class: "btn btn-primary" %>
+        <%= submit class: "btn btn-primary btn-sm" do %>
+          <i class="fas fa-plus"></i>
+        <% end %>
       </div>
     </div>
   </div>

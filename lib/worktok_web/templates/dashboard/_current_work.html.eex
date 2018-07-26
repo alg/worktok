@@ -11,7 +11,7 @@
             <td class="text-right col-sm-1"><%= money total %></td>
             <td class="text-right">
               <%= link to: dashboard_path(@conn, :create_invoice, project_id), method: :post do %>
-                <span class="glyphicon glyphicon-chevron-down">C</span>
+                <i class="far fa-arrow-alt-circle-down"></i>
               <% end %>
             </td>
           </tr>

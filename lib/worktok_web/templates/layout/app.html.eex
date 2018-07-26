@@ -11,10 +11,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/components.css") %>">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
   </head>
 
   <body>
-    <header class="navbar navbar-expand-lg navbar-dark flex-column flex-md-row wt-navbar">
+    <nav class="navbar navbar-expand-lg navbar-dark flex-column flex-md-row wt-navbar">
+      <div class="container">
         <a class="navbar-brand mr-0 mr-md-2" href="#">
           <!-- <img src="/docs/4.1/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt=""> -->
           Worktok
@@ -26,29 +28,32 @@
               <li class="nav-item"><%= link "Clients", to: client_path(@conn, :index), class: "nav-link" %></li>
               <li class="nav-item"><%= link "Projects", to: project_path(@conn, :index), class: "nav-link" %></li>
               <li class="nav-item"><%= link "Invoices", to: invoice_path(@conn, :index), class: "nav-link" %></li>
-              <li class="nav-item"><%= link "Log out", to: session_path(@conn, :delete), method: "delete", class: "nav-link" %></li>
             </ul>
             <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
               <li class="nav-item">
-                <span class="navbar-text">
+                <span class="navbar-text text-white">
                   <%= @current_user.name %>
                 </span>
               </li>
+              <li class="nav-item"><%= link "Log out", to: session_path(@conn, :delete), method: "delete", class: "nav-link" %></li>
             </ul>
           <% else %>
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
               <li class="nav-item"><%= link "Register", to: user_path(@conn, :new), class: "nav-link" %></li>
               <li class="nav-item"><%= link "Log in", to: session_path(@conn, :new), class: "nav-link" %></li>
             </ul>
           <% end %>
         </div>
-    </header>
+      </div>
+    </nav>
 
     <main role="main" class="container-fluid py-md-3">
-      <div class="container-header">
+      <div class="container-header container">
         <%= render "flash.html", assigns %>
       </div>
-      <%= render @view_module, @view_template, assigns %>
+      <div class="container">
+        <%= render @view_module, @view_template, assigns %>
+      </div>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

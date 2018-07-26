@@ -5,10 +5,10 @@ defmodule WorktokWeb.DashboardView do
     today = Date.utc_today()
     cond do
       date == today ->
-        "TODAY"
+        "Today"
 
       date == Date.add(today, -1) ->
-        "YESTERDAY"
+        "Yesterday"
 
       date > Date.add(today, -7) ->
         Timex.format!(date, "%A", :strftime)
