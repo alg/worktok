@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mt-5">
   <div class="col-sm-12">
     <h5 class="mb-3">Current work</h5>
     <%= if length(@current_work) == 0 do %>
