@@ -6,7 +6,7 @@
       <p>No work today yet</p>
     <% else %>
       <table class="table table-sm">
-        <thead>
+        <!-- <thead>
           <tr class="table-primary">
             <th class="">Project</th>
             <th class="col">Task</th>
@@ -14,21 +14,22 @@
             <th class="text-right">Total</th>
             <th class="text-right"></th>
           </tr>
-        </thead>
+        </thead> -->
         <tbody>
           <%= for {date, works} <- @recent_work do %>
+            <tr><td colspan="5">&nbsp;</td></tr>
             <tr>
               <th class="table-warning" colspan="5">
                 <%= day_label(date) %>
               </th>
             </tr>
             <%= for w <- works do %>
-              <tr>
-                <td><%= w.project.name %></td>
-                <td><%= w.task %></td>
-                <td class="text-center"><%= w.hours %></td>
-                <td class="text-right"><%= money(w.total) %></td>
-                <td class="text-right">
+              <tr class="d-flex">
+                <td class="col-2"><%= w.project.name %></td>
+                <td class="col-7"><%= w.task %></td>
+                <td class="col-1 text-center"><%= w.hours %></td>
+                <td class="col-1 text-right"><%= money(w.total) %></td>
+                <td class="col-1 text-right">
                   <%= link to: dashboard_path(@conn, :delete_work, w.id), method: :delete do %>
                     <i class="far fa-trash-alt"></i>
                   <% end %>
