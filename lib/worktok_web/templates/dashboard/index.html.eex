@@ -3,7 +3,7 @@
   <%= render "_form.html", assigns %>
   <%= render "_recent_work.html", assigns %>
   </div>
-  <div class="col-xl-3 col-sm-5">
+  <div class="col-xl-3 col-sm-5 dashboard-sidebar">
     <%= render "_goals.html", assigns %>
     <%= render "_earnings.html", assigns %>
     <%= render "_current_work.html", assigns %>

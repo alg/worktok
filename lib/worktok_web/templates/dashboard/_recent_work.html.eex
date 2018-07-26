@@ -5,7 +5,7 @@
       <hr/>
       <p>No work today yet</p>
     <% else %>
-      <table class="table table-condensed">
+      <table class="table table-sm">
         <thead>
           <tr class="table-primary">
             <th class="">Project</th>

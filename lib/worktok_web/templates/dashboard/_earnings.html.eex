@@ -1,19 +1,17 @@
-<div class="row">
+<div class="row mb-5">
   <div class="col-sm-12">
-    <h3>Earnings</h3>
-    <table class="table condensed">
-      <tr>
-        <th>This week</th>
-        <td class="text-right"><%= money @earnings[:this_week] %></td>
-      </tr>
-      <tr>
-        <th>This month</th>
-        <td class="text-right"><%= money @earnings[:this_month] %></td>
-      </tr>
-      <tr>
-        <th>Unpaid</th>
-        <td class="text-right"><%= money @earnings[:unpaid] %></td>
-      </tr>
-    </table>
+    <h5 class="mb-3">Earnings</h5>
+    <div class="row mb-2">
+      <div class="col-6">This week</div>
+      <div class="col-6 text-right"><%= money @earnings[:this_week] %></div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-6">This month</div>
+      <div class="col-6 text-right"><%= money @earnings[:this_month] %></div>
+    </div>
+    <div class="row">
+      <div class="col-6">Unpaid</div>
+      <div class="col-6 text-right"><%= money @earnings[:unpaid] %></div>
+    </div>
   </div>
 </div>
