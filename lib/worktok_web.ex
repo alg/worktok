@@ -61,11 +61,11 @@ defmodule WorktokWeb do
       def date(d) do
         Timex.format!(d, "%b %d, %Y", :strftime)
       end
-      
+
       def money(nil), do: money(Decimal.new(0))
       def money(v) do
         cents = trunc(Decimal.to_float(v) * 100)
-        Money.new(cents, :USD)
+        Money.to_string(Money.new(cents, :USD), symbol: true)
       end
 
       def yes_no(nil), do: "No"
