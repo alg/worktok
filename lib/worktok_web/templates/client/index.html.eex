@@ -1,4 +1,4 @@
-<h2>Listing Clients</h2>
+<h2>Clients</h2>
 
 <table class="table">
   <thead>
@@ -13,21 +13,21 @@
     </tr>
   </thead>
   <tbody>
-<%= for client <- @clients do %>
-    <tr>
-      <td><%= client.name %></td>
-      <td><%= client.email %></td>
-      <td><%= client.prefix %></td>
-      <td><%= client.active %></td>
-      <td><%= client.rate %></td>
+    <%= for client <- @clients do %>
+      <tr>
+        <td><%= client.name %></td>
+        <td><%= client.email %></td>
+        <td><%= client.prefix %></td>
+        <td><%= client.active %></td>
+        <td><%= client.rate %></td>
 
-      <td class="text-right">
-        <span><%= link "Show", to: client_path(@conn, :show, client), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Edit", to: client_path(@conn, :edit, client), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: client_path(@conn, :delete, client), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
-      </td>
-    </tr>
-<% end %>
+        <td class="text-right">
+          <span><%= link "Show", to: client_path(@conn, :show, client), class: "btn btn-default btn-xs" %></span>
+          <span><%= link "Edit", to: client_path(@conn, :edit, client), class: "btn btn-default btn-xs" %></span>
+          <span><%= link "Delete", to: client_path(@conn, :delete, client), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+        </td>
+      </tr>
+    <% end %>
   </tbody>
 </table>
 

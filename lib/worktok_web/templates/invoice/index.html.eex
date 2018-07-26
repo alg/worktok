@@ -1,31 +1,37 @@
-<h2>Listing Invoices</h2>
+<h2>Invoices</h2>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Ref</th>
-      <th>Client</th>
-      <th>Project</th>
-      <th>Total</th>
-      <th>Paid</th>
+<%= if length(@invoices) == 0 do %>
+  <p><strong>You don't have any invoices yet.</strong> </p>
+  <p>Register some work on <%= link "Dashboard page", to: dashboard_path(@conn, :index) %> and then create invoice for it by clicking on the
+    <a href="#" click="false"><i class="far fa-arrow-alt-circle-down"></a></i> icon in the sidebar.</p>
+<% else %>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Ref</th>
+        <th>Client</th>
+        <th>Project</th>
+        <th>Total</th>
+        <th>Paid</th>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for invoice <- @invoices do %>
-    <tr>
-      <td><%= invoice.ref %></td>
-      <td><%= invoice.client.name %></td>
-      <td><%= invoice.project.name %></td>
-      <td><%= money invoice.total %></td>
-      <td><%= invoice.paid_on %></td>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for invoice <- @invoices do %>
+        <tr>
+          <td><%= invoice.ref %></td>
+          <td><%= invoice.client.name %></td>
+          <td><%= invoice.project.name %></td>
+          <td><%= money invoice.total %></td>
+          <td><%= invoice.paid_on %></td>
 
-      <td class="text-right">
-        <span><%= link "Show", to: invoice_path(@conn, :show, invoice), class: "btn btn-default btn-xs" %></span>
-        <span><%= link "Delete", to: invoice_path(@conn, :delete, invoice), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
-      </td>
-    </tr>
+          <td class="text-right">
+            <span><%= link "Show", to: invoice_path(@conn, :show, invoice), class: "btn btn-default btn-xs" %></span>
+            <span><%= link "Delete", to: invoice_path(@conn, :delete, invoice), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 <% end %>
-  </tbody>
-</table>
