@@ -40,7 +40,7 @@
 
     <div class="col-lg-1 col-sm-2">
       <div class="form-group">
-        <%= submit class: "btn btn-primary btn-sm" do %>
+        <%= submit class: "btn btn-primary btn-sm float-right" do %>
           <i class="fas fa-plus"></i>
         <% end %>
       </div>
