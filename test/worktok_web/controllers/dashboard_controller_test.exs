@@ -8,7 +8,7 @@ defmodule WorktokWeb.DashboardControllerTest do
 
   describe "index" do
     @tag login_as: "Max"
-    test "renders dashboard", %{conn: conn, user: user} do
+    test "renders dashboard", %{conn: conn} do
       conn = get conn, dashboard_path(conn, :index)
       assert html_response(conn, 200) =~ "Earnings"
     end

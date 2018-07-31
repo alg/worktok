@@ -21,6 +21,12 @@ defmodule Worktok.TestHelpers do
     user
   end
 
+  def profile_fixture(attrs \\ %{}) do
+    user = user_fixture()
+    {:ok, %Accounts.User{profile: profile}} = Accounts.update_profile(user, attrs)
+    profile
+  end
+
   def client_fixture() do
     user = user_fixture()
     client_fixture(user)

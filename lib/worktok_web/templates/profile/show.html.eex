@@ -1,0 +1,61 @@
+<div class="page-header hidden-print">
+  <h2>Profile</h2>
+</div>
+
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+    <%= form_for @profile, profile_path(@conn, :update), [method: "put"], fn f -> %>
+      <%= hidden_input f, :id %>
+      <div class="row">
+        <div class="col-6">
+          <h5>Billing Address</h5>
+          <p class="text-muted">Billing address is placed in the header of invocies.</p>
+          <%= inputs_for f, :billing_address, fn baf -> %>
+            <div class="row">
+              <div class="form-group col-6">
+                <%= label baf, :name, class: "control-label" %>
+                <%= text_input baf, :name, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <%= label baf, :street, class: "control-label" %>
+              <%= text_input baf, :street, class: "form-control" %>
+            </div>
+            <div class="row">
+              <div class="form-group col-6">
+                <%= label baf, :zip, class: "control-label" %>
+                <%= text_input baf, :zip, class: "form-control" %>
+              </div>
+              <div class="form-group col-6">
+                <%= label baf, :city, class: "control-label" %>
+                <%= text_input baf, :city, class: "form-control" %>
+              </div>
+            </div>
+            <div class="row">
+              <div class="form-group col-6">
+                <%= label baf, :state, class: "control-label" %>
+                <%= text_input baf, :state, class: "form-control" %>
+              </div>
+              <div class="form-group col-6">
+                <%= label baf, :country, class: "control-label" %>
+                <%= text_input baf, :country, class: "form-control" %>
+              </div>
+            </div>
+            <div class="form-group">
+              <%= label baf, :email, class: "control-label" %>
+              <%= text_input baf, :email, class: "form-control" %>
+            </div>
+            <div class="form-group">
+              <%= label baf, :phone, class: "control-label" %>
+              <%= text_input baf, :phone, class: "form-control" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= submit "Submit", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

@@ -39,6 +39,7 @@ defmodule WorktokWeb.Router do
     resources "/clients", ClientController
     resources "/projects", ProjectController
     resources "/invoices", InvoiceController
+    resources "/profile", ProfileController, singleton: true, only: [:show, :update]
 
     delete "/logout", SessionController, :delete
   end

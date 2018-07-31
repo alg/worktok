@@ -5,7 +5,7 @@ defmodule WorktokWeb.InvoiceControllerTest do
     @tag login_as: "Max"
     test "lists all invoices", %{conn: conn} do
       conn = get conn, invoice_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Invoices"
+      assert html_response(conn, 200) =~ "Invoices"
     end
   end
 

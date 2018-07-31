@@ -7,8 +7,7 @@
     <div class="invoice-header">
       <div class="row">
         <div class="col-12 text-right">
-          <strong>User Name</strong><br>
-          <%= "Address..." %>
+          <%= raw billing_address(@current_user |> Worktok.Repo.preload(:profile)) %>
         </div>
       </div>
 

@@ -29,10 +29,11 @@
               <li class="nav-item"><%= link "Clients", to: client_path(@conn, :index), class: "nav-link" %></li>
               <li class="nav-item"><%= link "Projects", to: project_path(@conn, :index), class: "nav-link" %></li>
               <li class="nav-item"><%= link "Invoices", to: invoice_path(@conn, :index), class: "nav-link" %></li>
+              <li class="nav-item"><%= link "Profile", to: profile_path(@conn, :show), class: "nav-link" %></li>
             </ul>
             <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
               <li class="nav-item">
-                <span class="navbar-text text-white">
+                <span class="navbar-text text-white mr-2">
                   <%= @current_user.name %>
                 </span>
               </li>

@@ -27,11 +27,11 @@ defmodule WorktokWeb.DashboardController do
 
   def add_work(conn, params = %{"work" => work_params}, current_user) do
     case Billing.create_work(current_user, work_params) do
-      {:ok, work} ->
+      {:ok, %Billing.Work{}} ->
         conn
         |> redirect(to: dashboard_path(conn, :index))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{}} ->
         conn
         |> put_flash(:error, "Please review your work")
         |> index(params, current_user)

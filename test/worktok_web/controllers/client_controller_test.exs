@@ -9,7 +9,7 @@ defmodule WorktokWeb.ClientControllerTest do
     @tag login_as: "Max"
     test "lists all clients", %{conn: conn} do
       conn = get conn, client_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Clients"
+      assert html_response(conn, 200) =~ "Clients"
     end
   end
 

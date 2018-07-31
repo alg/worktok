@@ -7,6 +7,7 @@ defmodule Worktok.Accounts do
   alias Worktok.Repo
 
   alias Worktok.Accounts.User
+  alias Worktok.Accounts.Profile
 
   @doc """
   Returns the list of users.
@@ -115,4 +116,14 @@ defmodule Worktok.Accounts do
     from(q in query, where: q.user_id == ^user_id)
   end
 
+  def get_profile!(%User{} = user) do
+    user = Repo.preload(user, :profile)
+    user.profile || %Profile{}
+  end
+
+  def update_profile(%User{} = user, attr) do
+    user
+    |> User.profile_changeset(%{profile: attr})
+    |> Repo.update()
+  end
 end

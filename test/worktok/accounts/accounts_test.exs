@@ -46,8 +46,9 @@ defmodule Worktok.AccountsTest do
     end
 
     test "create_user/1 with valid data creates a user" do
-      user = user_fixture()
+      user = user_fixture() |> Repo.preload(:profile)
       assert user.name == "John Doe"
+      assert user.profile == nil
     end
 
     test "create_user/1 with invalid data returns error changeset" do
@@ -75,6 +76,29 @@ defmodule Worktok.AccountsTest do
     test "change_user/1 returns a user changeset" do
       user = user_fixture()
       assert %Ecto.Changeset{} = Accounts.change_user(user)
+    end
+  end
+
+
+  describe "Profile" do
+    alias Worktok.Accounts.User
+    alias Worktok.Accounts.Profile
+    alias Worktok.Accounts.BillingAddress
+
+    test "get_profile!/1 for user w/o profile" do
+      user = user_fixture()
+      %Profile{} = Accounts.get_profile!(user)
+    end
+
+    test "get_profile!/1 for user w/ profile" do
+      %Profile{id: profile_id, user: user} = profile_fixture(%{billing_address: %{name: "Aleks"}}) |> Repo.preload(:user)
+      assert %Profile{id: ^profile_id, billing_address: %{name: "Aleks"}} = Accounts.get_profile!(user)
+    end
+
+    test "update_profile/2" do
+      user = user_fixture()
+      {:ok, %User{profile: %Profile{billing_address: %BillingAddress{name: "Mark Smith", street: "1 Main Str"}}}} =
+        Accounts.update_profile(user, %{billing_address: %{name: "Mark Smith", street: "1 Main Str"}})
     end
   end
 end

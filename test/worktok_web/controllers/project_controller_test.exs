@@ -16,7 +16,7 @@ defmodule WorktokWeb.ProjectControllerTest do
     @tag login_as: "Max"
     test "lists all projects", %{conn: conn} do
       conn = get conn, project_path(conn, :index)
-      assert html_response(conn, 200) =~ "Listing Projects"
+      assert html_response(conn, 200) =~ "Projects"
     end
   end
 
