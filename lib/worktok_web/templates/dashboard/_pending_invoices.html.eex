@@ -6,7 +6,7 @@
     <% else %>
       <%= for {id, ref, total} <- @pending_invoices do %>
         <div class="row mb-2">
-          <div class="col-6"><%= ref %></div>
+          <div class="col-6"><%= link ref, to: invoice_path(@conn, :show, id) %></div>
           <div class="col-6 text-right">
             <%= money total %>
             &nbsp;
