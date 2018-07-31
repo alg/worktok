@@ -1,6 +1,6 @@
 <div class="row mb-2 mt-3">
   <div class="col-sm-12">
-    <h5 class="mb-3">Earnings</h5>
+    <h4 class="mb-3">Earnings</h4>
     <div class="row mb-2">
       <div class="col-6">This week</div>
       <div class="col-6 text-right"><%= money @earnings[:this_week] %></div>

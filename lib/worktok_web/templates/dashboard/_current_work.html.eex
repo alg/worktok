@@ -1,6 +1,6 @@
 <div class="row mt-5">
   <div class="col-sm-12">
-    <h5 class="mb-3">Current work</h5>
+    <h4 class="mb-3">Current work</h4>
     <%= if length(@current_work) == 0 do %>
       <p>No unpaid work</p>
     <% else %>
