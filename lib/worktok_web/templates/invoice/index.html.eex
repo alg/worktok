@@ -11,7 +11,7 @@
         <th>Ref</th>
         <th>Client</th>
         <th>Project</th>
-        <th>Total</th>
+        <th class="text-right">Total</th>
         <th>Paid</th>
 
         <th></th>
@@ -23,7 +23,7 @@
           <td><%= invoice.ref %></td>
           <td><%= invoice.client.name %></td>
           <td><%= invoice.project.name %></td>
-          <td><%= money invoice.total %></td>
+          <td class="text-right"><%= money invoice.total %></td>
           <td><%= invoice.paid_on %></td>
 
           <td class="text-right">

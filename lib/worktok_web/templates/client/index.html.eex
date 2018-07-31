@@ -5,9 +5,9 @@
     <tr>
       <th>Name</th>
       <th>Email</th>
-      <th>Prefix</th>
-      <th>Active</th>
-      <th>Rate</th>
+      <th class="text-center">Prefix</th>
+      <th class="text-center">Active</th>
+      <th class="text-right">Rate</th>
 
       <th></th>
     </tr>
@@ -17,9 +17,9 @@
       <tr>
         <td><%= client.name %></td>
         <td><%= client.email %></td>
-        <td><%= client.prefix %></td>
-        <td><%= client.active %></td>
-        <td><%= client.rate %></td>
+        <td class="text-center"><%= client.prefix %></td>
+        <td class="text-center"><%= if client.active, do: "Yes", else: "No" %></td>
+        <td class="text-right"><%= money client.rate %></td>
 
         <td class="text-right">
           <span><%= link "Show", to: client_path(@conn, :show, client), class: "btn btn-default btn-xs" %></span>
