@@ -19,14 +19,19 @@
     </thead>
     <tbody>
       <%= for invoice <- @invoices do %>
-        <tr>
+        <tr class="<%= invoice_row_class(invoice) %>">
           <td><%= invoice.ref %></td>
           <td><%= invoice.client.name %></td>
           <td><%= invoice.project.name %></td>
           <td class="text-right"><%= money invoice.total %></td>
-          <td><%= invoice.paid_on %></td>
+          <td><%= date invoice.paid_on %></td>
 
           <td class="text-right">
+            <%= if Worktok.Billing.Invoice.paid?(invoice) do %>
+              <span><%= link "Unpay", to: invoice_path(@conn, :unpay, invoice), method: "post", class: "btn btn-default btn-xs" %></span>
+            <% else %>
+              <span><%= link "Pay", to: invoice_path(@conn, :pay, invoice), method: "post", class: "btn btn-default btn-xs" %></span>
+            <% end %>
             <span><%= link "Show", to: invoice_path(@conn, :show, invoice), class: "btn btn-default btn-xs" %></span>
             <span><%= link "Delete", to: invoice_path(@conn, :delete, invoice), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %></span>
           </td>

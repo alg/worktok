@@ -18,8 +18,18 @@ defmodule Worktok.Billing do
   def list_user_invoices(%User{} = user) do
     Invoice
     |> Accounts.user_scope_query(user)
+    |> order_by(desc: :paid_on, asc: :inserted_at)
     |> Repo.all
     |> Repo.preload([:user, :client, :project])
+  end
+
+  def list_pending_invoices(%User{} = user) do
+    Invoice
+    |> Accounts.user_scope_query(user)
+    |> select([i], {i.id, i.ref, i.total})
+    |> where([i], is_nil(i.paid_on))
+    |> order_by(asc: :inserted_at)
+    |> Repo.all
   end
 
   @doc """
@@ -98,6 +108,15 @@ defmodule Worktok.Billing do
     Invoice.changeset(invoice, %{})
   end
 
+  def pay_invoice(%Invoice{paid_on: nil} = invoice) do
+    update_invoice(invoice, %{paid_on: Timex.now()})
+  end
+  def pay_invoice(%Invoice{} = invoice), do: {:ok, invoice}
+
+  def unpay_invoice(%Invoice{paid_on: nil} = invoice), do: {:ok, invoice}
+  def unpay_invoice(%Invoice{} = invoice) do
+    update_invoice(invoice, %{paid_on: nil})
+  end
 
   alias Worktok.Billing.Work
 

@@ -18,6 +18,10 @@ defmodule Worktok.Billing.Invoice do
     timestamps()
   end
 
+  def paid?(invoice) do
+    invoice.paid_on != nil
+  end
+
   @doc false
   def changeset(invoice, attrs) do
     invoice

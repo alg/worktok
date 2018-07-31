@@ -35,10 +35,15 @@ defmodule WorktokWeb.Router do
     post "/add_work", DashboardController, :add_work
     delete "/delete_work/:id", DashboardController, :delete_work
     post "/create_invoice/:project_id", DashboardController, :create_invoice
-
+    post "/pay_invoice/:invoice_id", DashboardController, :pay_invoice
+    
     resources "/clients", ClientController
     resources "/projects", ProjectController
+
     resources "/invoices", InvoiceController
+    post "/invoices/:id/pay", InvoiceController, :pay
+    post "/invoices/:id/unpay", InvoiceController, :unpay
+
     resources "/profile", ProfileController, singleton: true, only: [:show, :update]
 
     delete "/logout", SessionController, :delete

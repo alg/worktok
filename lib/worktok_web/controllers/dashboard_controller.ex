@@ -22,7 +22,10 @@ defmodule WorktokWeb.DashboardController do
     current_work =
       Billing.current_work(current_user)
 
-    render(conn, "index.html", projects: projects, recent_work: recent_work, new_work: new_work, earnings: earnings, current_work: current_work)
+    pending_invoices =
+      Billing.list_pending_invoices(current_user)
+
+    render(conn, "index.html", projects: projects, recent_work: recent_work, new_work: new_work, earnings: earnings, current_work: current_work, pending_invoices: pending_invoices)
   end
 
   def add_work(conn, params = %{"work" => work_params}, current_user) do
@@ -52,8 +55,16 @@ defmodule WorktokWeb.DashboardController do
     {:ok, invoice} = Billing.create_invoice_from_unpaid_work(project)
 
     conn
-    |> put_flash(:info, "Invoice created")
     |> redirect(to: invoice_path(conn, :show, invoice.id))
+  end
+
+  def pay_invoice(conn, %{"invoice_id" => id}, current_user) do
+    invoice = Billing.get_user_invoice!(current_user, id)
+    {:ok, _invoice} = Billing.pay_invoice(invoice)
+
+    conn
+    |> put_flash(:info, "Invoice marked as paid")
+    |> redirect(to: dashboard_path(conn, :index))
   end
 
 end

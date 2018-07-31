@@ -6,7 +6,7 @@ defmodule Worktok.BillingTest do
   alias Worktok.Billing.Invoice
   alias Worktok.Registry.Project
 
-  defp invoice_fixture(attrs \\ %{}) do
+  defp create_invoice(attrs \\ %{}) do
     user = user_fixture()
     client = client_fixture(user)
     project = project_fixture(client)
@@ -22,12 +22,12 @@ defmodule Worktok.BillingTest do
     @invalid_attrs %{forgiven: nil, hours: nil, paid_on: nil, ref: nil, total: nil}
 
     test "list_invoices/0 returns all invoices" do
-      %Invoice{id: id, user: owner} = invoice_fixture()
+      %Invoice{id: id, user: owner} = create_invoice()
       assert [%Invoice{id: ^id}] = Billing.list_user_invoices(owner)
     end
 
     test "get_invoice!/1 returns the invoice with given id" do
-      %Invoice{id: id, user: owner} = invoice_fixture()
+      %Invoice{id: id, user: owner} = create_invoice()
       assert %Invoice{id: ^id} = Billing.get_user_invoice!(owner, id)
     end
 
@@ -53,7 +53,7 @@ defmodule Worktok.BillingTest do
     end
 
     test "update_invoice/2 with valid data updates the invoice" do
-      invoice = invoice_fixture()
+      invoice = create_invoice()
       assert {:ok, invoice} = Billing.update_invoice(invoice, @update_attrs)
       assert %Invoice{} = invoice
       assert invoice.forgiven == false
@@ -64,19 +64,41 @@ defmodule Worktok.BillingTest do
     end
 
     test "update_invoice/2 with invalid data returns error changeset" do
-      invoice = invoice_fixture()
+      invoice = create_invoice()
       assert {:error, %Ecto.Changeset{}} = Billing.update_invoice(invoice, @invalid_attrs)
     end
 
     test "delete_invoice/1 deletes the invoice" do
-      invoice = invoice_fixture()
+      invoice = create_invoice()
       assert {:ok, %Invoice{}} = Billing.delete_invoice(invoice)
       assert_raise Ecto.NoResultsError, fn -> Billing.get_user_invoice!(invoice.user, invoice.id) end
     end
 
     test "change_invoice/1 returns a invoice changeset" do
-      invoice = invoice_fixture()
+      invoice = create_invoice()
       assert %Ecto.Changeset{} = Billing.change_invoice(invoice)
+    end
+
+    test "pay_invoice/1 marks invoice as paid" do
+      invoice = create_invoice()
+      {:ok, inv} = Billing.pay_invoice(invoice)
+      assert Invoice.paid?(inv)
+    end
+
+    test "pay_invoice/1 doesn't mark already paid invoice" do
+      yesterday = Timex.subtract(Timex.today(), Timex.Duration.from_days(1))
+      invoice = create_invoice(%{paid_on: yesterday})
+      assert {:ok, %Invoice{paid_on: ^yesterday}} = Billing.pay_invoice(invoice)
+    end
+
+    test "unpay_invoice/1 unpays paid invoice" do
+      yesterday = Timex.subtract(Timex.today(), Timex.Duration.from_days(1))
+      invoice = create_invoice(%{paid_on: yesterday})
+      assert {:ok, %Invoice{paid_on: nil}} = Billing.unpay_invoice(invoice)
+    end
+    test "unpay_invoice/1 does nothing for unpaid invoice" do
+      invoice = create_invoice(%{paid_on: nil})
+      assert {:ok, %Invoice{paid_on: nil}} = Billing.unpay_invoice(invoice)
     end
   end
 

@@ -2,6 +2,7 @@ defmodule WorktokWeb.InvoiceView do
   use WorktokWeb, :view
 
   alias Worktok.Accounts.{User,Profile,BillingAddress}
+  alias Worktok.Billing.Invoice
 
   def billing_address(%User{profile: nil}), do: ""
   def billing_address(%User{profile: %Profile{billing_address: nil}}), do: ""
@@ -14,6 +15,9 @@ defmodule WorktokWeb.InvoiceView do
       ba.phone
     ] |> join("<br/>")
   end
+
+  def invoice_row_class(%Invoice{paid_on: nil}), do: ""
+  def invoice_row_class(%Invoice{}), do: "table-success"
 
   defp strong(nil), do: nil
   defp strong(v), do: "<strong>#{v}</strong>"
