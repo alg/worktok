@@ -52,10 +52,16 @@ defmodule WorktokWeb.DashboardController do
 
   def create_invoice(conn, %{"project_id" => project_id}, current_user) do
     project = Registry.get_user_project!(current_user, project_id)
-    {:ok, invoice} = Billing.create_invoice_from_unpaid_work(project)
 
-    conn
-    |> redirect(to: invoice_path(conn, :show, invoice.id))
+    case Billing.create_invoice_from_unpaid_work(project) do
+      {:ok, invoice} ->
+        redirect(conn, to: invoice_path(conn, :show, invoice.id))
+
+      {:error, :no_work} ->
+        conn
+        |> put_flash(:error, "Project has no uninvoiced work")
+        |> redirect(to: dashboard_path(conn, :index))
+    end
   end
 
   def pay_invoice(conn, %{"invoice_id" => id}, current_user) do

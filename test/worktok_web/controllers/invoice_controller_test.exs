@@ -1,6 +1,8 @@
 defmodule WorktokWeb.InvoiceControllerTest do
   use WorktokWeb.ConnCase
 
+  alias Worktok.Billing.Invoice
+
   describe "index" do
     @tag login_as: "Max"
     test "lists all invoices", %{conn: conn} do
@@ -31,6 +33,35 @@ defmodule WorktokWeb.InvoiceControllerTest do
       end
     end
   end
+
+  describe "pay" do
+    setup [:create_invoice]
+
+    @tag login_as: "Max"
+    test "should mark invoice as paid", %{conn: conn, user: user, invoice: invoice} do
+      conn = post conn, invoice_path(conn, :pay, invoice.id)
+      assert get_flash(conn, :info) == "Invoice marked as paid"
+      assert redirected_to(conn) == invoice_path(conn, :index)
+
+      today = Timex.today()
+      assert %Invoice{paid_on: ^today} = Worktok.Billing.get_user_invoice!(user, invoice.id)
+    end
+  end
+
+  describe "unpay" do
+    setup [:create_invoice]
+
+    @tag login_as: "Max"
+    test "should mark invoice as paid", %{conn: conn, user: user, invoice: invoice} do
+      {:ok, invoice} = Worktok.Billing.pay_invoice(invoice)
+
+      conn = post conn, invoice_path(conn, :unpay, invoice.id)
+      assert get_flash(conn, :info) == "Invoice marked as unpaid"
+      assert redirected_to(conn) == invoice_path(conn, :index)
+      assert %Invoice{paid_on: nil} = Worktok.Billing.get_user_invoice!(user, invoice.id)
+    end
+  end
+
 
   defp create_invoice(%{user: user}) do
     client = client_fixture(user)

@@ -12,6 +12,15 @@ defmodule Worktok.Billing do
   alias Worktok.Billing.Invoice
   alias Worktok.Registry.{Client,Project}
 
+  @last_work_copy_duration Timex.Duration.from_minutes(30)
+
+  @doc """
+  Returns the duration, during which the last entered work is used for work date copy.
+  This is useful when you enter past work. This way you don't need to change the date over
+  and over to the one in the past.
+  """
+  def last_work_copy_duration(), do: @last_work_copy_duration
+
   @doc """
   Returns the list of user invoices.
   """
@@ -23,6 +32,9 @@ defmodule Worktok.Billing do
     |> Repo.preload([:user, :client, :project])
   end
 
+  @doc """
+  Returns the list of all pending invoices.
+  """
   def list_pending_invoices(%User{} = user) do
     Invoice
     |> Accounts.user_scope_query(user)
@@ -80,8 +92,9 @@ defmodule Worktok.Billing do
           |> Repo.update_all(set: [invoice_id: invoice_id])
 
         {:ok, invoice}
+
       true ->
-        :nothing
+        {:error, :no_work}
     end
   end
 
@@ -136,7 +149,7 @@ defmodule Worktok.Billing do
   def recent_work(%User{} = user, since_date \\ Timex.beginning_of_month(Timex.today())) do
     Work
     |> Accounts.user_scope_query(user)
-    |> where([w], w.worked_on > ^since_date)
+    |> where([w], w.worked_on >= ^since_date)
     |> where([w], is_nil(w.invoice_id))
     |> order_by(desc: :worked_on)
     |> Repo.all
@@ -225,11 +238,11 @@ defmodule Worktok.Billing do
 
       work ->
         cond do
-          Timex.after?(last_work.inserted_at, Timex.subtract(Timex.now(), Timex.Duration.from_minutes(30))) ->
+          Timex.after?(last_work.inserted_at, Timex.subtract(Timex.now(), @last_work_copy_duration)) ->
             {work.project_id, work.worked_on}
 
           true ->
-            {work.project_id, Date.utc_today()}
+            {work.project_id, Timex.today()}
         end
     end
 
@@ -243,7 +256,7 @@ defmodule Worktok.Billing do
   @doc """
   Looks up user earnigns in the given periods.
   """
-  def earnings(%User{id: user_id}) do
+  def earnings(%User{id: user_id}, on \\ Timex.today()) do
     user_work =
       from w in Work,
         select: sum(w.total),
@@ -251,11 +264,11 @@ defmodule Worktok.Billing do
 
     this_week =
       from w in user_work,
-        where: w.worked_on >= ^Timex.beginning_of_week(Timex.today())
+        where: w.worked_on >= ^Timex.beginning_of_week(on)
 
     this_month =
       from w in user_work,
-        where: w.worked_on >= ^Timex.beginning_of_month(Timex.today())
+        where: w.worked_on >= ^Timex.beginning_of_month(on)
 
     unpaid =
       from w in user_work,
