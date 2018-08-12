@@ -1,7 +1,9 @@
 # Worktok
 
 Worktok is a small and simple multiuser billing and invoicing application. A user is
-free to define client and projects, report their time and create nice invoices.
+free to define clients and projects, register their time and expenses, and create nice
+invoices.
+
 Convenient dashboard shows current uninvoiced work, earning summaries and pending
 invoices.
 
