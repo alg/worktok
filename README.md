@@ -5,6 +5,13 @@ free to define client and projects, report their time and create nice invoices.
 Convenient dashboard shows current uninvoiced work, earning summaries and pending
 invoices.
 
+## Features
+
+  * Listing clients
+  * Listing client projects
+  * Recording work and expenses
+  * Generating invoices and tracking payments
+
 ## Starting locally
 
 Application depends on PostgreSQL database server and written in Elixir. You need both
@@ -18,7 +25,3 @@ To start your Phoenix server:
   * Start Phoenix endpoint with `mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
-
-## TODO
-
-  * user profile with billing address
