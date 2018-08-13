@@ -10,7 +10,7 @@ defmodule Worktok.Billing do
   alias Worktok.Accounts.User
   alias Worktok.Billing.Work
   alias Worktok.Billing.Invoice
-  alias Worktok.Registry.{Client,Project}
+  alias Worktok.Registry.{Client, Project}
 
   @last_work_copy_duration Timex.Duration.from_minutes(30)
 
@@ -28,7 +28,7 @@ defmodule Worktok.Billing do
     Invoice
     |> Accounts.user_scope_query(user)
     |> order_by(desc: :paid_on, asc: :inserted_at)
-    |> Repo.all
+    |> Repo.all()
     |> Repo.preload([:user, :client, :project])
   end
 
@@ -41,7 +41,7 @@ defmodule Worktok.Billing do
     |> select([i], {i.id, i.ref, i.total})
     |> where([i], is_nil(i.paid_on))
     |> order_by(asc: :inserted_at)
-    |> Repo.all
+    |> Repo.all()
   end
 
   @doc """
@@ -78,18 +78,18 @@ defmodule Worktok.Billing do
     cond do
       Repo.one!(count) > 0 ->
         {hours, total} =
-          (from w in uninvoiced_project_work,
-            select: {sum(w.hours), sum(w.total)})
-            |> Repo.one!
+          from(w in uninvoiced_project_work,
+            select: {sum(w.hours), sum(w.total)}
+          )
+          |> Repo.one!()
 
-        today =
-          Timex.format!(Timex.today(), "%Y%m%d", :strftime)
+        today = Timex.format!(Timex.today(), "%Y%m%d", :strftime)
 
         {:ok, invoice = %Invoice{id: invoice_id}} =
           create_invoice(project, %{ref: prefix <> today, hours: hours, total: total})
 
         uninvoiced_project_work
-          |> Repo.update_all(set: [invoice_id: invoice_id])
+        |> Repo.update_all(set: [invoice_id: invoice_id])
 
         {:ok, invoice}
 
@@ -124,9 +124,11 @@ defmodule Worktok.Billing do
   def pay_invoice(%Invoice{paid_on: nil} = invoice) do
     update_invoice(invoice, %{paid_on: Timex.now()})
   end
+
   def pay_invoice(%Invoice{} = invoice), do: {:ok, invoice}
 
   def unpay_invoice(%Invoice{paid_on: nil} = invoice), do: {:ok, invoice}
+
   def unpay_invoice(%Invoice{} = invoice) do
     update_invoice(invoice, %{paid_on: nil})
   end
@@ -139,7 +141,7 @@ defmodule Worktok.Billing do
   def list_user_works(%User{} = user) do
     Work
     |> Accounts.user_scope_query(user)
-    |> Repo.all
+    |> Repo.all()
     |> Repo.preload(:user)
   end
 
@@ -152,7 +154,7 @@ defmodule Worktok.Billing do
     |> where([w], w.worked_on >= ^since_date)
     |> where([w], is_nil(w.invoice_id))
     |> order_by(desc: :worked_on)
-    |> Repo.all
+    |> Repo.all()
     |> Repo.preload(project: [:client])
   end
 
@@ -164,7 +166,8 @@ defmodule Worktok.Billing do
   def current_work(%User{id: user_id}) do
     uninvoiced =
       from w in Work,
-        join: p in Project, on: w.project_id == p.id,
+        join: p in Project,
+        on: w.project_id == p.id,
         select: {p.id, p.name, sum(w.total)},
         where: w.user_id == ^user_id and is_nil(w.invoice_id),
         group_by: p.id,
@@ -182,7 +185,6 @@ defmodule Worktok.Billing do
     |> Repo.one!()
     |> Repo.preload(:user)
   end
-
 
   @doc """
   Creates a work.
@@ -223,6 +225,7 @@ defmodule Worktok.Billing do
   def new_work(%User{} = _current_user, %{"work" => work_params}) do
     Work.changeset(%Work{}, work_params)
   end
+
   def new_work(%User{} = user, _) do
     last_work =
       Work
@@ -230,28 +233,36 @@ defmodule Worktok.Billing do
       |> order_by(desc: :id)
       |> select([:id, :project_id, :worked_on, :inserted_at])
       |> limit(1)
-      |> Repo.one
+      |> Repo.one()
 
-    {project_id, worked_on} = case last_work do
-      nil ->
-        {nil, Date.utc_today()}
+    {project_id, worked_on} =
+      case last_work do
+        nil ->
+          {nil, Date.utc_today()}
 
-      work ->
-        cond do
-          Timex.after?(last_work.inserted_at, Timex.subtract(Timex.now(), @last_work_copy_duration)) ->
-            {work.project_id, work.worked_on}
+        work ->
+          cond do
+            Timex.after?(
+              last_work.inserted_at,
+              Timex.subtract(Timex.now(), @last_work_copy_duration)
+            ) ->
+              {work.project_id, work.worked_on}
 
-          true ->
-            {work.project_id, Timex.today()}
-        end
-    end
+            true ->
+              {work.project_id, Timex.today()}
+          end
+      end
 
     Work.changeset(%Work{}, %{worked_on: worked_on, project_id: project_id})
   end
 
   defp put_user(changeset, %User{} = user), do: Ecto.Changeset.put_assoc(changeset, :user, user)
-  defp put_client(changeset, %Client{} = client), do: Ecto.Changeset.put_assoc(changeset, :client, client)
-  defp put_project(changeset, %Project{} = project), do: Ecto.Changeset.put_assoc(changeset, :project, project)
+
+  defp put_client(changeset, %Client{} = client),
+    do: Ecto.Changeset.put_assoc(changeset, :client, client)
+
+  defp put_project(changeset, %Project{} = project),
+    do: Ecto.Changeset.put_assoc(changeset, :project, project)
 
   @doc """
   Looks up user earnigns in the given periods.
@@ -272,11 +283,12 @@ defmodule Worktok.Billing do
 
     unpaid =
       from w in user_work,
-        left_join: i in Invoice, on: w.invoice_id == i.id,
-        where: is_nil(w.invoice_id) or
-               (is_nil(i.paid_on) and i.forgiven == false)
+        left_join: i in Invoice,
+        on: w.invoice_id == i.id,
+        where: is_nil(w.invoice_id) or (is_nil(i.paid_on) and i.forgiven == false)
 
-    [ this_week: Repo.one!(this_week),
+    [
+      this_week: Repo.one!(this_week),
       this_month: Repo.one!(this_month),
       unpaid: Repo.one!(unpaid)
     ]

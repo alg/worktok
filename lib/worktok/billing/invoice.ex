@@ -2,7 +2,6 @@ defmodule Worktok.Billing.Invoice do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "invoices" do
     field :forgiven, :boolean, default: false
     field :hours, :decimal

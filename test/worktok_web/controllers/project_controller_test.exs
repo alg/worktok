@@ -4,7 +4,12 @@ defmodule WorktokWeb.ProjectControllerTest do
   alias Worktok.Registry
 
   @create_attrs %{active: true, name: "some name", prefix: "some prefix", rate: "120.5"}
-  @update_attrs %{active: false, name: "some updated name", prefix: "some updated prefix", rate: "456.7"}
+  @update_attrs %{
+    active: false,
+    name: "some updated name",
+    prefix: "some updated prefix",
+    rate: "456.7"
+  }
   @invalid_attrs %{active: nil, name: nil, prefix: nil, rate: nil}
 
   def fixture(:project) do
@@ -15,7 +20,7 @@ defmodule WorktokWeb.ProjectControllerTest do
   describe "index" do
     @tag login_as: "Max"
     test "lists all projects", %{conn: conn} do
-      conn = get conn, project_path(conn, :index)
+      conn = get(conn, project_path(conn, :index))
       assert html_response(conn, 200) =~ "Projects"
     end
   end
@@ -25,7 +30,7 @@ defmodule WorktokWeb.ProjectControllerTest do
 
     @tag login_as: "Max"
     test "show project", %{conn: conn, project: project} do
-      conn = get conn, project_path(conn, :show, project)
+      conn = get(conn, project_path(conn, :show, project))
       assert html_response(conn, 200) =~ "Show Project"
     end
   end
@@ -33,7 +38,7 @@ defmodule WorktokWeb.ProjectControllerTest do
   describe "new project" do
     @tag login_as: "Max"
     test "renders form", %{conn: conn} do
-      conn = get conn, project_path(conn, :new)
+      conn = get(conn, project_path(conn, :new))
       assert html_response(conn, 200) =~ "New Project"
     end
   end
@@ -42,7 +47,10 @@ defmodule WorktokWeb.ProjectControllerTest do
     @tag login_as: "Max"
     test "redirects to show when data is valid", %{conn: conn, user: user} do
       client = client_fixture(user)
-      conn = post conn, project_path(conn, :create), project: Enum.into(%{client_id: client.id}, @create_attrs)
+
+      conn =
+        post conn, project_path(conn, :create),
+          project: Enum.into(%{client_id: client.id}, @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == project_path(conn, :show, id)
@@ -60,7 +68,7 @@ defmodule WorktokWeb.ProjectControllerTest do
 
     @tag login_as: "Max"
     test "renders form for editing chosen project", %{conn: conn, project: project} do
-      conn = get conn, project_path(conn, :edit, project)
+      conn = get(conn, project_path(conn, :edit, project))
       assert html_response(conn, 200) =~ "Edit Project"
     end
   end
@@ -86,8 +94,9 @@ defmodule WorktokWeb.ProjectControllerTest do
 
     @tag login_as: "Max"
     test "deletes chosen project", %{conn: conn, project: project, user: user} do
-      conn = delete conn, project_path(conn, :delete, project)
+      conn = delete(conn, project_path(conn, :delete, project))
       assert redirected_to(conn) == project_path(conn, :index)
+
       assert_raise Ecto.NoResultsError, fn ->
         Worktok.Registry.get_user_project!(user, project.id)
       end

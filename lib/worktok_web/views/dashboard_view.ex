@@ -3,6 +3,7 @@ defmodule WorktokWeb.DashboardView do
 
   def day_label(date) do
     today = Date.utc_today()
+
     cond do
       date == today ->
         "Today"
@@ -17,5 +18,4 @@ defmodule WorktokWeb.DashboardView do
         Timex.format!(date, "%B %d", :strftime)
     end
   end
-
 end

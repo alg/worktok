@@ -2,7 +2,6 @@ defmodule Worktok.Registry.Project do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "projects" do
     field :active, :boolean, default: false
     field :name, :string

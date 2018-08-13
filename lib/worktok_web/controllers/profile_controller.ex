@@ -5,7 +5,7 @@ defmodule WorktokWeb.ProfileController do
 
   def show(conn, _, current_user) do
     profile = Worktok.Accounts.get_profile!(current_user) |> Profile.changeset(%{})
-    render conn, "show.html", profile: profile
+    render(conn, "show.html", profile: profile)
   end
 
   def update(conn, %{"profile" => profile_params}, current_user) do
@@ -21,5 +21,4 @@ defmodule WorktokWeb.ProfileController do
         |> redirect(to: profile_path(conn, :show))
     end
   end
-
 end

@@ -3,7 +3,10 @@ defmodule WorktokWeb.UserControllerTest do
 
   alias Worktok.Accounts
 
-  @create_attrs %{name: "Some Name", credential: %{email: "some@email.com", password: "supersecret"}}
+  @create_attrs %{
+    name: "Some Name",
+    credential: %{email: "some@email.com", password: "supersecret"}
+  }
   @invalid_attrs %{name: nil}
 
   def fixture(:user) do
@@ -13,7 +16,7 @@ defmodule WorktokWeb.UserControllerTest do
 
   describe "new user" do
     test "renders form", %{conn: conn} do
-      conn = get conn, user_path(conn, :new)
+      conn = get(conn, user_path(conn, :new))
       assert html_response(conn, 200) =~ "New User"
     end
   end
@@ -30,5 +33,4 @@ defmodule WorktokWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "New User"
     end
   end
-
 end

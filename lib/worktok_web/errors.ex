@@ -1,5 +1,4 @@
 defmodule WorktokWeb.Errors do
-
   # Returns the list of full-text messages concatenating the names of fields
   # and error messages taken from the changeset errors.
   #
@@ -16,10 +15,12 @@ defmodule WorktokWeb.Errors do
   defp full_message(%Ecto.Changeset{} = changeset, key, error) do
     module_name = inspect(changeset.data.__struct__)
     key_path = "#{module_name}.#{key}"
-    key_name = case Gettext.dgettext(WorktokWeb.Gettext, "schema", key_path) do
-      ^key_path -> key
-      n -> n
-    end
+
+    key_name =
+      case Gettext.dgettext(WorktokWeb.Gettext, "schema", key_path) do
+        ^key_path -> key
+        n -> n
+      end
 
     "#{key_name} #{WorktokWeb.ErrorHelpers.translate_error(error)}"
   end

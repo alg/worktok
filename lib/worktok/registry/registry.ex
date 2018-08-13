@@ -100,7 +100,7 @@ defmodule Worktok.Registry do
     |> Repo.preload([:user, :client])
   end
 
-   @doc """
+  @doc """
   Creates a project.
   """
   def create_project(%Accounts.User{} = user, attrs \\ %{}) do
@@ -134,5 +134,4 @@ defmodule Worktok.Registry do
     |> Project.changeset(%{})
     |> put_user(user)
   end
-
 end

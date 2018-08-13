@@ -11,7 +11,7 @@ defmodule Worktok.Application do
       # Start the Ecto repository
       supervisor(Worktok.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(WorktokWeb.Endpoint, []),
+      supervisor(WorktokWeb.Endpoint, [])
       # Start your own worker by calling: Worktok.Worker.start_link(arg1, arg2, arg3)
       # worker(Worktok.Worker, [arg1, arg2, arg3]),
     ]

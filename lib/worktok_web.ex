@@ -44,8 +44,9 @@ defmodule WorktokWeb do
 
   def view do
     quote do
-      use Phoenix.View, root: "lib/worktok_web/templates",
-                        namespace: WorktokWeb
+      use Phoenix.View,
+        root: "lib/worktok_web/templates",
+        namespace: WorktokWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
@@ -58,11 +59,13 @@ defmodule WorktokWeb do
       import WorktokWeb.Gettext
 
       def date(nil), do: nil
+
       def date(d) do
         Timex.format!(d, "%b %d, %Y", :strftime)
       end
 
       def money(nil), do: money(Decimal.new(0))
+
       def money(v) do
         cents = trunc(Decimal.to_float(v) * 100)
         Money.to_string(Money.new(cents, :USD), symbol: true)

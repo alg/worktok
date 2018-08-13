@@ -6,7 +6,7 @@ defmodule WorktokWeb.InvoiceControllerTest do
   describe "index" do
     @tag login_as: "Max"
     test "lists all invoices", %{conn: conn} do
-      conn = get conn, invoice_path(conn, :index)
+      conn = get(conn, invoice_path(conn, :index))
       assert html_response(conn, 200) =~ "Invoices"
     end
   end
@@ -16,7 +16,7 @@ defmodule WorktokWeb.InvoiceControllerTest do
 
     @tag login_as: "Max"
     test "shows invoice details", %{conn: conn, invoice: invoice} do
-      conn = get conn, invoice_path(conn, :show, invoice)
+      conn = get(conn, invoice_path(conn, :show, invoice))
       assert html_response(conn, 200) =~ invoice.ref
     end
   end
@@ -26,8 +26,9 @@ defmodule WorktokWeb.InvoiceControllerTest do
 
     @tag login_as: "Max"
     test "deletes chosen invoice", %{conn: conn, user: user, invoice: invoice} do
-      conn = delete conn, invoice_path(conn, :delete, invoice)
+      conn = delete(conn, invoice_path(conn, :delete, invoice))
       assert redirected_to(conn) == invoice_path(conn, :index)
+
       assert_raise Ecto.NoResultsError, fn ->
         Worktok.Billing.get_user_invoice!(user, invoice.id)
       end
@@ -39,7 +40,7 @@ defmodule WorktokWeb.InvoiceControllerTest do
 
     @tag login_as: "Max"
     test "should mark invoice as paid", %{conn: conn, user: user, invoice: invoice} do
-      conn = post conn, invoice_path(conn, :pay, invoice.id)
+      conn = post(conn, invoice_path(conn, :pay, invoice.id))
       assert get_flash(conn, :info) == "Invoice marked as paid"
       assert redirected_to(conn) == invoice_path(conn, :index)
 
@@ -55,13 +56,12 @@ defmodule WorktokWeb.InvoiceControllerTest do
     test "should mark invoice as paid", %{conn: conn, user: user, invoice: invoice} do
       {:ok, invoice} = Worktok.Billing.pay_invoice(invoice)
 
-      conn = post conn, invoice_path(conn, :unpay, invoice.id)
+      conn = post(conn, invoice_path(conn, :unpay, invoice.id))
       assert get_flash(conn, :info) == "Invoice marked as unpaid"
       assert redirected_to(conn) == invoice_path(conn, :index)
       assert %Invoice{paid_on: nil} = Worktok.Billing.get_user_invoice!(user, invoice.id)
     end
   end
-
 
   defp create_invoice(%{user: user}) do
     client = client_fixture(user)

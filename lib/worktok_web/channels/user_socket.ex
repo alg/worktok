@@ -5,7 +5,7 @@ defmodule WorktokWeb.UserSocket do
   # channel "room:*", WorktokWeb.RoomChannel
 
   ## Transports
-  transport :websocket, Phoenix.Transports.WebSocket
+  transport(:websocket, Phoenix.Transports.WebSocket)
   # transport :longpoll, Phoenix.Transports.LongPoll
 
   # Socket params are passed from the client and can

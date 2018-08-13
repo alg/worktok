@@ -2,7 +2,7 @@ defmodule WorktokWeb.SessionController do
   use WorktokWeb, :controller
 
   def new(conn, _params) do
-    render conn, "new.html"
+    render(conn, "new.html")
   end
 
   def create(conn, %{"session" => %{"email" => email, "password" => pass}}) do
@@ -25,5 +25,4 @@ defmodule WorktokWeb.SessionController do
     |> put_flash(:info, "Come back soon!")
     |> redirect(to: page_path(conn, :index))
   end
-
 end

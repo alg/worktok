@@ -18,12 +18,12 @@ defmodule WorktokWeb.Router do
   scope "/", WorktokWeb do
     pipe_through :browser
 
-    get  "/", PageController, :index
+    get "/", PageController, :index
 
-    get  "/signup", UserController, :new
+    get "/signup", UserController, :new
     post "/signup", UserController, :create
 
-    get  "/login", SessionController, :new
+    get "/login", SessionController, :new
     post "/login", SessionController, :create
   end
 
@@ -31,12 +31,12 @@ defmodule WorktokWeb.Router do
   scope "/", WorktokWeb do
     pipe_through [:browser, :authenticate_user]
 
-    get  "/dashboard", DashboardController, :index
+    get "/dashboard", DashboardController, :index
     post "/add_work", DashboardController, :add_work
     delete "/delete_work/:id", DashboardController, :delete_work
     post "/create_invoice/:project_id", DashboardController, :create_invoice
     post "/pay_invoice/:invoice_id", DashboardController, :pay_invoice
-    
+
     resources "/clients", ClientController
     resources "/projects", ProjectController
 

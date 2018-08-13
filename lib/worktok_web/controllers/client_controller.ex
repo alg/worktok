@@ -53,6 +53,7 @@ defmodule WorktokWeb.ClientController do
 
   def delete(conn, %{"id" => id}, current_user) do
     client = Registry.get_user_client!(current_user, id)
+
     case Registry.delete_client(client) do
       {:ok, _client} ->
         conn
@@ -69,5 +70,4 @@ defmodule WorktokWeb.ClientController do
         |> redirect(to: client_path(conn, :index))
     end
   end
-
 end

@@ -2,7 +2,7 @@ defmodule WorktokWeb.InvoiceViewTest do
   use WorktokWeb.ConnCase, async: true
 
   alias WorktokWeb.InvoiceView
-  alias Worktok.Accounts.{User,Profile,BillingAddress}
+  alias Worktok.Accounts.{User, Profile, BillingAddress}
   alias Worktok.Billing.Invoice
 
   describe "billing_address/1" do
@@ -25,20 +25,26 @@ defmodule WorktokWeb.InvoiceViewTest do
         email: "john@smith.com",
         phone: "89991234567"
       }
+
       assert InvoiceView.billing_address(%User{profile: %Profile{billing_address: ba}}) ==
-        "<strong>" <> ba.name <> "</strong><br/>" <>
-        ba.street <> "<br/>" <>
-        ba.zip <> ", " <> ba.city <> "<br/>" <>
-        ba.state <> ", " <> ba.country <> "<br/>" <>
-        ba.email <> "<br/>" <>
-        ba.phone
+               "<strong>" <>
+                 ba.name <>
+                 "</strong><br/>" <>
+                 ba.street <>
+                 "<br/>" <>
+                 ba.zip <>
+                 ", " <>
+                 ba.city <>
+                 "<br/>" <>
+                 ba.state <> ", " <> ba.country <> "<br/>" <> ba.email <> "<br/>" <> ba.phone
     end
 
     test "with empty billing address" do
-      assert InvoiceView.billing_address(%User{profile: %Profile{billing_address: %BillingAddress{}}}) == ""
+      assert InvoiceView.billing_address(%User{
+               profile: %Profile{billing_address: %BillingAddress{}}
+             }) == ""
     end
   end
-
 
   describe "invoice_row_class/1" do
     test "unpaid invoice" do

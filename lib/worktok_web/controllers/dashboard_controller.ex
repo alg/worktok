@@ -5,27 +5,29 @@ defmodule WorktokWeb.DashboardController do
   alias Worktok.Billing
 
   def index(conn, params, current_user) do
-    projects =
-      Registry.list_active_user_projects(current_user)
+    projects = Registry.list_active_user_projects(current_user)
 
     recent_work =
       Billing.recent_work(current_user)
-      |> Enum.group_by(&(&1.worked_on))
+      |> Enum.group_by(& &1.worked_on)
       |> Enum.sort(fn {k1, _v}, {k2, _v2} -> k1 >= k2 end)
 
-    new_work =
-      Billing.new_work(current_user, params)
+    new_work = Billing.new_work(current_user, params)
 
-    earnings =
-      Billing.earnings(current_user)
+    earnings = Billing.earnings(current_user)
 
-    current_work =
-      Billing.current_work(current_user)
+    current_work = Billing.current_work(current_user)
 
-    pending_invoices =
-      Billing.list_pending_invoices(current_user)
+    pending_invoices = Billing.list_pending_invoices(current_user)
 
-    render(conn, "index.html", projects: projects, recent_work: recent_work, new_work: new_work, earnings: earnings, current_work: current_work, pending_invoices: pending_invoices)
+    render(conn, "index.html",
+      projects: projects,
+      recent_work: recent_work,
+      new_work: new_work,
+      earnings: earnings,
+      current_work: current_work,
+      pending_invoices: pending_invoices
+    )
   end
 
   def add_work(conn, params = %{"work" => work_params}, current_user) do
@@ -72,5 +74,4 @@ defmodule WorktokWeb.DashboardController do
     |> put_flash(:info, "Invoice marked as paid")
     |> redirect(to: dashboard_path(conn, :index))
   end
-
 end

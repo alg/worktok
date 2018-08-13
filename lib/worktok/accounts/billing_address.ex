@@ -2,7 +2,6 @@ defmodule Worktok.Accounts.BillingAddress do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   embedded_schema do
     field :name, :string
     field :street, :string

@@ -2,7 +2,6 @@ defmodule Worktok.Billing.Work do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "works" do
     field :hours, :decimal
     field :task, :string

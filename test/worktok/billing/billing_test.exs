@@ -15,10 +15,21 @@ defmodule Worktok.BillingTest do
     invoice
   end
 
-
   describe "invoices" do
-    @valid_attrs %{forgiven: true, hours: "120.5", paid_on: ~D[2010-04-17], ref: "some ref", total: "120.5"}
-    @update_attrs %{forgiven: false, hours: "456.7", paid_on: ~D[2011-05-18], ref: "some updated ref", total: "456.7"}
+    @valid_attrs %{
+      forgiven: true,
+      hours: "120.5",
+      paid_on: ~D[2010-04-17],
+      ref: "some ref",
+      total: "120.5"
+    }
+    @update_attrs %{
+      forgiven: false,
+      hours: "456.7",
+      paid_on: ~D[2011-05-18],
+      ref: "some updated ref",
+      total: "456.7"
+    }
     @invalid_attrs %{forgiven: nil, hours: nil, paid_on: nil, ref: nil, total: nil}
 
     test "list_invoices/0 returns all invoices" do
@@ -71,7 +82,10 @@ defmodule Worktok.BillingTest do
     test "delete_invoice/1 deletes the invoice" do
       invoice = create_invoice()
       assert {:ok, %Invoice{}} = Billing.delete_invoice(invoice)
-      assert_raise Ecto.NoResultsError, fn -> Billing.get_user_invoice!(invoice.user, invoice.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Billing.get_user_invoice!(invoice.user, invoice.id)
+      end
     end
 
     test "change_invoice/1 returns a invoice changeset" do
@@ -96,6 +110,7 @@ defmodule Worktok.BillingTest do
       invoice = create_invoice(%{paid_on: yesterday})
       assert {:ok, %Invoice{paid_on: nil}} = Billing.unpay_invoice(invoice)
     end
+
     test "unpay_invoice/1 does nothing for unpaid invoice" do
       invoice = create_invoice(%{paid_on: nil})
       assert {:ok, %Invoice{paid_on: nil}} = Billing.unpay_invoice(invoice)
@@ -104,7 +119,12 @@ defmodule Worktok.BillingTest do
 
   describe "works" do
     @valid_attrs %{hours: "120.5", task: "some task", total: "120.5", worked_on: ~D[2010-04-17]}
-    @update_attrs %{hours: "456.7", task: "some updated task", total: "456.7", worked_on: ~D[2011-05-18]}
+    @update_attrs %{
+      hours: "456.7",
+      task: "some updated task",
+      total: "456.7",
+      worked_on: ~D[2011-05-18]
+    }
     @invalid_attrs %{hours: nil, task: nil, total: nil, worked_on: nil}
 
     test "new_work/2 with params" do
@@ -112,7 +132,9 @@ defmodule Worktok.BillingTest do
       work_params = %{"hours" => "100", "total" => "7500", "task" => "Design"}
       hours = Decimal.new(100)
       total = Decimal.new(7500)
-      assert %Ecto.Changeset{changes: %{hours: ^hours, total: ^total, task: "Design"}} = Billing.new_work(user, %{"work" => work_params})
+
+      assert %Ecto.Changeset{changes: %{hours: ^hours, total: ^total, task: "Design"}} =
+               Billing.new_work(user, %{"work" => work_params})
     end
 
     test "new_work/2 without params and last work" do
@@ -123,7 +145,9 @@ defmodule Worktok.BillingTest do
 
     test "new_work/2 with last work within threshold period" do
       %Work{user: user, project_id: project_id, worked_on: worked_on} = work_fixture()
-      assert %Ecto.Changeset{changes: %{project_id: ^project_id, worked_on: ^worked_on}} = Billing.new_work(user, nil)
+
+      assert %Ecto.Changeset{changes: %{project_id: ^project_id, worked_on: ^worked_on}} =
+               Billing.new_work(user, nil)
     end
 
     test "new_work/2 with last work past threshold duration (Billing.last_work_copy_duration) should ignore the time of work" do
@@ -131,17 +155,26 @@ defmodule Worktok.BillingTest do
       client = client_fixture(user)
       %Project{id: project_id} = project_fixture(client)
 
-      over_duration = Timex.Duration.add(Billing.last_work_copy_duration, Timex.Duration.from_minutes(1))
+      over_duration =
+        Timex.Duration.add(Billing.last_work_copy_duration(), Timex.Duration.from_minutes(1))
 
       {:ok, _work} =
         %Work{}
-        |> Work.changeset(%{task: "Yesterday", hours: "2", total: "150", worked_on: "2018-10-24", project_id: project_id})
+        |> Work.changeset(%{
+          task: "Yesterday",
+          hours: "2",
+          total: "150",
+          worked_on: "2018-10-24",
+          project_id: project_id
+        })
         |> Ecto.Changeset.put_assoc(:user, user)
         |> put_change(:inserted_at, Timex.subtract(Timex.now(), over_duration))
         |> Repo.insert()
 
-        today = Timex.today()
-      assert %Ecto.Changeset{changes: %{project_id: ^project_id, worked_on: ^today}} = Billing.new_work(user, nil)
+      today = Timex.today()
+
+      assert %Ecto.Changeset{changes: %{project_id: ^project_id, worked_on: ^today}} =
+               Billing.new_work(user, nil)
     end
 
     test "list_user_works/1 returns all works" do
@@ -160,17 +193,32 @@ defmodule Worktok.BillingTest do
       client = client_fixture(user)
       project = project_fixture(client)
 
-      work_bom = work_fixture(user, %{task: "task-bom", project_id: project.id, worked_on: strdate(bom)})
-      work_last_month = work_fixture(user, %{task: "task-lm", project_id: project.id, worked_on: strdate(last_month)})
-      work_this_month = work_fixture(user, %{task: "task-tm", project_id: project.id, worked_on: strdate(this_month)})
+      work_bom =
+        work_fixture(user, %{task: "task-bom", project_id: project.id, worked_on: strdate(bom)})
+
+      work_last_month =
+        work_fixture(user, %{
+          task: "task-lm",
+          project_id: project.id,
+          worked_on: strdate(last_month)
+        })
+
+      work_this_month =
+        work_fixture(user, %{
+          task: "task-tm",
+          project_id: project.id,
+          worked_on: strdate(this_month)
+        })
 
       user_2 = user_fixture()
       client_2 = client_fixture(user, prefix: "C2")
       project_2 = project_fixture(client_2, prefix: "P2")
       work_fixture(user_2, %{project_id: project_2.id})
 
-      assert [work_this_month.id, work_bom.id], Billing.recent_work(user) |> Enum.map(&(&1.id))
-      assert [work_this_month.id, work_bom.id, work_last_month.id], Billing.recent_work(user, last_month) |> Enum.map(&(&1.id))
+      assert [work_this_month.id, work_bom.id], Billing.recent_work(user) |> Enum.map(& &1.id)
+
+      assert [work_this_month.id, work_bom.id, work_last_month.id],
+             Billing.recent_work(user, last_month) |> Enum.map(& &1.id)
     end
 
     defp strdate(d) do
@@ -187,7 +235,9 @@ defmodule Worktok.BillingTest do
       client = client_fixture(user)
       project = project_fixture(client)
 
-      assert {:ok, %Work{} = work} = Billing.create_work(user, Enum.into(@valid_attrs, %{project_id: project.id}))
+      assert {:ok, %Work{} = work} =
+               Billing.create_work(user, Enum.into(@valid_attrs, %{project_id: project.id}))
+
       assert work.hours == Decimal.new("120.5")
       assert work.task == "some task"
       assert work.total == Decimal.new("120.5")
@@ -199,7 +249,8 @@ defmodule Worktok.BillingTest do
       client = client_fixture(user)
       project = project_fixture(client)
 
-      assert {:error, %Ecto.Changeset{}} = Billing.create_work(user, Enum.into(@invalid_attrs, %{project_id: project.id}))
+      assert {:error, %Ecto.Changeset{}} =
+               Billing.create_work(user, Enum.into(@invalid_attrs, %{project_id: project.id}))
     end
 
     test "update_work/2 with valid data updates the work" do
@@ -229,7 +280,6 @@ defmodule Worktok.BillingTest do
     end
   end
 
-
   describe "helpers" do
     test "earnings/1" do
       today = ~D[2018-07-19]
@@ -240,14 +290,18 @@ defmodule Worktok.BillingTest do
       work_fixture(user, %{project_id: project_id, worked_on: week_ago, total: 20})
       work_fixture(user, %{project_id: project_id, worked_on: month_ago, total: 40})
 
-      assert [this_week: Decimal.new(10), this_month: Decimal.new(30), unpaid: Decimal.new(70)] == Billing.earnings(user, today)
+      assert [this_week: Decimal.new(10), this_month: Decimal.new(30), unpaid: Decimal.new(70)] ==
+               Billing.earnings(user, today)
     end
 
     test "current_work/1" do
       %Work{project_id: project_1_id, user: user} = work_fixture(%{total: 1})
       %Work{project_id: project_2_id} = work_fixture(user, %{total: 2})
 
-      assert [{project_1_id, "Some Project", Decimal.new(1)}, {project_2_id, "Some Project", Decimal.new(2)}] == Billing.current_work(user)
+      assert [
+               {project_1_id, "Some Project", Decimal.new(1)},
+               {project_2_id, "Some Project", Decimal.new(2)}
+             ] == Billing.current_work(user)
     end
 
     test "create_invoice_from_unpaid_work/2 when work is present" do
@@ -266,12 +320,13 @@ defmodule Worktok.BillingTest do
       total = Decimal.new(10)
       ref = "#{prefix}#{Timex.format!(Timex.today(), "%Y%m%d", :strftime)}"
       {:ok, invoice} = Billing.create_invoice_from_unpaid_work(project)
-      assert %Invoice{hours: ^hours, total: ^total, ref: ^ref, paid_on: nil, forgiven: false} = invoice
+
+      assert %Invoice{hours: ^hours, total: ^total, ref: ^ref, paid_on: nil, forgiven: false} =
+               invoice
 
       invoice = Repo.preload(invoice, :works)
       assert Enum.count(invoice.works) == 1
     end
-
 
     test "create_invoice_from_unpaid_work/2 when work is missing" do
       project = project_fixture()

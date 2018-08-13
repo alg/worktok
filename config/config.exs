@@ -14,8 +14,7 @@ config :worktok, WorktokWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "AwasAC5Dzt1Xg9wj7zc3/S/Wh1OIk42h0JF8ykfyeXTmJ6fZQkEbLRx81IvHF8mK",
   render_errors: [view: WorktokWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Worktok.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: Worktok.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -33,4 +32,4 @@ config :money,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

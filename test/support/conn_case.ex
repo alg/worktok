@@ -27,7 +27,6 @@ defmodule WorktokWeb.ConnCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Worktok.Repo)
 
@@ -37,16 +36,17 @@ defmodule WorktokWeb.ConnCase do
 
     conn = Phoenix.ConnTest.build_conn()
 
-    opts = cond do
-      name = tags[:login_as] ->
-        user = Worktok.TestHelpers.user_fixture(name: name)
-        conn = Plug.Conn.assign(conn, :current_user, user)
-        [conn: conn, user: user]
-      true ->
-        [conn: conn]
-    end
+    opts =
+      cond do
+        name = tags[:login_as] ->
+          user = Worktok.TestHelpers.user_fixture(name: name)
+          conn = Plug.Conn.assign(conn, :current_user, user)
+          [conn: conn, user: user]
+
+        true ->
+          [conn: conn]
+      end
 
     {:ok, opts}
   end
-
 end

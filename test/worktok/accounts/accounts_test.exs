@@ -9,7 +9,6 @@ defmodule Worktok.AccountsTest do
     @update_attrs %{name: "Mark Smith"}
     @invalid_attrs %{name: nil}
 
-
     test "list_users/0 returns all users" do
       %User{id: id} = user_fixture()
       assert [%User{id: ^id}] = Accounts.list_users()
@@ -32,17 +31,23 @@ defmodule Worktok.AccountsTest do
 
     test "authenticate_by_email_and_pass returns the user if valid" do
       user = user_fixture() |> Worktok.Repo.preload(:credential)
-      {:ok, auth_user} = Accounts.authenticate_by_email_and_pass(user.credential.email, "supersecret")
+
+      {:ok, auth_user} =
+        Accounts.authenticate_by_email_and_pass(user.credential.email, "supersecret")
+
       assert auth_user.id == user.id
     end
 
     test "authenticate_by_email_and_pass when not authorized" do
       user = user_fixture() |> Worktok.Repo.preload(:credential)
-      assert {:error, :unauthorized} = Accounts.authenticate_by_email_and_pass(user.credential.email, "wrong-password")
+
+      assert {:error, :unauthorized} =
+               Accounts.authenticate_by_email_and_pass(user.credential.email, "wrong-password")
     end
 
     test "authenticate_by_email_and_pass when no user" do
-      assert {:error, :unauthorized} = Accounts.authenticate_by_email_and_pass("unknown@email.com", "supersecret")
+      assert {:error, :unauthorized} =
+               Accounts.authenticate_by_email_and_pass("unknown@email.com", "supersecret")
     end
 
     test "create_user/1 with valid data creates a user" do
@@ -79,7 +84,6 @@ defmodule Worktok.AccountsTest do
     end
   end
 
-
   describe "Profile" do
     alias Worktok.Accounts.User
     alias Worktok.Accounts.Profile
@@ -91,14 +95,25 @@ defmodule Worktok.AccountsTest do
     end
 
     test "get_profile!/1 for user w/ profile" do
-      %Profile{id: profile_id, user: user} = profile_fixture(%{billing_address: %{name: "Aleks"}}) |> Repo.preload(:user)
-      assert %Profile{id: ^profile_id, billing_address: %{name: "Aleks"}} = Accounts.get_profile!(user)
+      %Profile{id: profile_id, user: user} =
+        profile_fixture(%{billing_address: %{name: "Aleks"}}) |> Repo.preload(:user)
+
+      assert %Profile{id: ^profile_id, billing_address: %{name: "Aleks"}} =
+               Accounts.get_profile!(user)
     end
 
     test "update_profile/2" do
       user = user_fixture()
-      {:ok, %User{profile: %Profile{billing_address: %BillingAddress{name: "Mark Smith", street: "1 Main Str"}}}} =
-        Accounts.update_profile(user, %{billing_address: %{name: "Mark Smith", street: "1 Main Str"}})
+
+      {:ok,
+       %User{
+         profile: %Profile{
+           billing_address: %BillingAddress{name: "Mark Smith", street: "1 Main Str"}
+         }
+       }} =
+        Accounts.update_profile(user, %{
+          billing_address: %{name: "Mark Smith", street: "1 Main Str"}
+        })
     end
   end
 end

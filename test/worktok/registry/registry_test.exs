@@ -7,7 +7,13 @@ defmodule Worktok.RegistryTest do
   describe "clients" do
     alias Worktok.Registry.Client
 
-    @update_attrs %{active: false, email: "some updated email", name: "some updated name", prefix: "some updated prefix", rate: "456.7"}
+    @update_attrs %{
+      active: false,
+      email: "some updated email",
+      name: "some updated name",
+      prefix: "some updated prefix",
+      rate: "456.7"
+    }
     @invalid_attrs %{active: nil, email: nil, name: nil, prefix: nil, rate: nil}
 
     test "get_user_client!/1 returns the client with given id" do
@@ -88,7 +94,7 @@ defmodule Worktok.RegistryTest do
       client = %Registry.Client{user: owner} = client_fixture()
       %Project{id: active_id} = project_fixture(client)
       project_fixture(client, %{active: false})
-      assert [^active_id] = Registry.list_active_user_projects(owner) |> Enum.map(&(&1.id))
+      assert [^active_id] = Registry.list_active_user_projects(owner) |> Enum.map(& &1.id)
     end
 
     test "get_user_project!/2 returns the project with given id" do
@@ -96,6 +102,7 @@ defmodule Worktok.RegistryTest do
       assert %Project{id: ^id} = Registry.get_user_project!(owner, id)
 
       foo = user_fixture(name: "Foo")
+
       assert_raise Ecto.NoResultsError, fn ->
         Registry.get_user_project!(foo, id)
       end
@@ -138,7 +145,10 @@ defmodule Worktok.RegistryTest do
     test "delete_project/1 deletes the project" do
       project = project_fixture()
       assert {:ok, %Project{}} = Registry.delete_project(project)
-      assert_raise Ecto.NoResultsError, fn -> Registry.get_user_project!(project.user, project.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Registry.get_user_project!(project.user, project.id)
+      end
     end
 
     test "change_project/1 returns a project changeset" do

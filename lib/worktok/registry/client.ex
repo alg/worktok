@@ -2,7 +2,6 @@ defmodule Worktok.Registry.Client do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "clients" do
     field :active, :boolean, default: false
     field :email, :string
