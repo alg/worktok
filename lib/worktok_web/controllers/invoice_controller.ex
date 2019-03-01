@@ -1,5 +1,6 @@
 defmodule WorktokWeb.InvoiceController do
   use WorktokWeb, :user_controller
+  import Ecto.Query
 
   alias Worktok.Billing
 
@@ -11,7 +12,7 @@ defmodule WorktokWeb.InvoiceController do
   def show(conn, %{"id" => id}, current_user) do
     invoice =
       Billing.get_user_invoice!(current_user, id)
-      |> Worktok.Repo.preload([:client, :project, :works])
+      |> Worktok.Repo.preload([:client, :project, works: from(w in Billing.Work, order_by: w.worked_on)])
 
     render(conn, "show.html", invoice: invoice)
   end
