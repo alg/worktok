@@ -52,7 +52,12 @@ defmodule Worktok.Mixfile do
       {:bcrypt_elixir, "~> 1.0"},
       {:excoveralls, "~> 0.8", only: :test},
       {:money, "~> 1.2.1"},
-      {:timex, "~> 3.0"}
+      {:timex, "~> 3.0"},
+
+      {:hackney, "~> 1.13"}
+      # {:hackney, git: "https://github.com/benoitc/hackney.git"}
+      # {:certifi, git: "https://github.com/certifi/erlang-certifi.git"}
+      # {:parse_trans, git: "https://github.com/uwiger/parse_trans.git"}
     ]
   end
 
